@@ -6,12 +6,26 @@ from main.models import User, Recipe, RecipeCategory, Comment
 class UserAdmin(UserAdmin):
     def get_personal_info_fields(self, user: User):
         fields = User._meta.get_fields()
+        excluded_fields = [
+            'username', 'password', 'id'
+        ]
         personal_info_fields = [
             field.name for field in fields
-            if not field.is_relation
+            if field.name not in excluded_fields and not field.is_relation
         ]
         return personal_info_fields
-        
+
+    def get_fieldsets(self, request, obj: User = None):
+        fieldsets = super().get_fieldsets(request, obj)
+        if not obj:
+            return fieldsets
+
+        fieldsets = (
+            (None, {'fields': ('username', 'password')}),
+            ('Personal info', {'fields': self.get_personal_info_fields(obj)}),
+        )
+        return fieldsets
+
     list_display = [
         'id',
         'last_name',
@@ -28,6 +42,9 @@ class RecipeAdmin(admin.ModelAdmin):
         'time_cooking',
         'created',
         'updated'
+    ]
+    autocomplete_fields = [
+        'user'
     ]
 
 @admin.register(RecipeCategory)
@@ -48,4 +65,7 @@ class CommentAdmin(admin.ModelAdmin):
         'user',
         'created',
         'updated'
+    ]
+    autocomplete_fields = [
+        'user'
     ]

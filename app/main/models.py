@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from main.const import KEY_USER_TYPES_CHOICES
+from main.const import KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Created')
@@ -42,7 +42,9 @@ class Recipe(BaseModel):
         on_delete=models.PROTECT, 
         blank=False, 
         null=False, 
-        verbose_name='Пользователь'
+        verbose_name='Пользователь',
+        help_text='Добавить рецепт может только шеф-повар',
+        limit_choices_to={'type': KEY_USER_TYPE_CHEF}
     )
 
     def __str__(self) -> str:
