@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
+from tinymce.models import HTMLField
+
 from main.const import KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF
 
 class BaseModel(models.Model):
@@ -27,6 +30,7 @@ class RecipeCategory(BaseModel):
 
 class Recipe(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
+    html_description = HTMLField(verbose_name='Описание')
     ingredients = models.TextField(null=False, blank=False, verbose_name='ингредиенты')
     steps = models.TextField(null=False, blank=False, verbose_name='Шаги')
     time_cooking = models.TimeField(null=False, blank=False, verbose_name='время приготовления')
@@ -46,6 +50,8 @@ class Recipe(BaseModel):
         help_text='Добавить рецепт может только шеф-повар',
         limit_choices_to={'type': KEY_USER_TYPE_CHEF}
     )
+    class Meta: 
+        verbose_name = "Рецепт"
 
     def __str__(self) -> str:
         return self.title
