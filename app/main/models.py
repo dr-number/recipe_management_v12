@@ -3,7 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 from tinymce.models import HTMLField
 
-from main.const import KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF
+from main.const import (
+    KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF, RATING_RECIPE_CHOICES
+)
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Created')
@@ -52,12 +54,19 @@ class Recipe(BaseModel):
     )
     class Meta: 
         verbose_name = "Рецепт"
+        verbose_name_plural = "Рецепты"
 
     def __str__(self) -> str:
         return self.title
     
 class Comment(BaseModel):
     text = models.TextField(null=False, blank=False, max_length=250, verbose_name='Комментарий')
+    raiting = models.IntegerField(
+        verbose_name='Рейтинг',
+        choices=RATING_RECIPE_CHOICES,
+        null=False,
+        blank=False
+    )
     recipe = models.OneToOneField(
         to=Recipe,
         on_delete=models.PROTECT, 

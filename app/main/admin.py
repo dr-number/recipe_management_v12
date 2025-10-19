@@ -52,7 +52,6 @@ class RecipeAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         'type',
-        # 'user',
         TimeCookingFilter
     ]
 
@@ -70,6 +69,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'text',
+        'raiting',
         'recipe',
         'user',
         'created',
