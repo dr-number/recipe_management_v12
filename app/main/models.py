@@ -38,3 +38,22 @@ class Recipe(BaseModel):
         verbose_name='Категория'
     )
 
+    def __str__(self) -> str:
+        return self.title
+    
+class Comment(BaseModel):
+    text = models.TextField(null=False, blank=False, max_length=250, verbose_name='Комментарий')
+    recipe = models.OneToOneField(
+        to=Recipe,
+        on_delete=models.PROTECT, 
+        blank=False, 
+        null=False, 
+        verbose_name='Рецепт'
+    )
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.PROTECT, 
+        blank=False, 
+        null=False, 
+        verbose_name='Пользователь'
+    )
