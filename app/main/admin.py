@@ -7,9 +7,9 @@ from main.filters import TimeCookingFilter
 class UserAdmin(UserAdmin):
     def get_personal_info_fields(self, user: User):
         fields = User._meta.get_fields()
-        excluded_fields = [
+        excluded_fields = (
             'username', 'password', 'id'
-        ]
+        )
         personal_info_fields = [
             field.name for field in fields
             if field.name not in excluded_fields and not field.is_relation
@@ -29,16 +29,16 @@ class UserAdmin(UserAdmin):
         return fieldsets
 
     filter_horizontal = UserAdmin.filter_horizontal + ('favorites',)
-    list_display = [
+    list_display = (
         'id',
         'last_name',
         'first_name',
         'type'
-    ]
+    )
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = [
+    list_display = (
         'id',
         'title',
         'type',
@@ -46,17 +46,17 @@ class RecipeAdmin(admin.ModelAdmin):
         # 'show_raiting',
         'created',
         'updated'
-    ]
+    )
     search_fields = [
         'title'
     ]
     autocomplete_fields = [
         'user'
     ]
-    list_filter = [
+    list_filter = (
         'type',
         TimeCookingFilter
-    ]
+    )
     def show_raiting(self, obj: Recipe):
         return obj.average_rating
 
@@ -65,16 +65,16 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(RecipeCategory)
 class RecipeCategoryAdmin(admin.ModelAdmin):
-    list_display = [
+    list_display = (
         'id',
         'title',
         'created',
         'updated'
-    ]
+    )
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = [
+    list_display = (
         'id',
         'text',
         'raiting',
@@ -82,7 +82,7 @@ class CommentAdmin(admin.ModelAdmin):
         'user',
         'created',
         'updated'
-    ]
+    )
     autocomplete_fields = [
         'user'
     ]
