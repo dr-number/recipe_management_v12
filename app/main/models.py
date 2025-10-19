@@ -24,6 +24,13 @@ class User(AbstractUser):
         null=False,
         blank=False
     )
+    favorites = models.ManyToManyField(
+        to='Recipe',
+        verbose_name='Избранное',
+        blank=True,
+        null=True,
+        related_name='favorited_by'
+    )
 
 class RecipeCategory(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')

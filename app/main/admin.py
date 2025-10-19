@@ -14,6 +14,7 @@ class UserAdmin(UserAdmin):
             field.name for field in fields
             if field.name not in excluded_fields and not field.is_relation
         ]
+        personal_info_fields.append('favorites')
         return personal_info_fields
 
     def get_fieldsets(self, request, obj: User = None):
@@ -27,6 +28,7 @@ class UserAdmin(UserAdmin):
         )
         return fieldsets
 
+    filter_horizontal = UserAdmin.filter_horizontal + ('favorites',)
     list_display = [
         'id',
         'last_name',
@@ -41,7 +43,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'title',
         'type',
         'time_cooking',
-        'show_raiting',
+        # 'show_raiting',
         'created',
         'updated'
     ]
