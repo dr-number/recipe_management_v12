@@ -41,6 +41,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'title',
         'type',
         'time_cooking',
+        'show_raiting',
         'created',
         'updated'
     ]
@@ -54,6 +55,11 @@ class RecipeAdmin(admin.ModelAdmin):
         'type',
         TimeCookingFilter
     ]
+    def show_raiting(self, obj: Recipe):
+        return obj.average_rating
+
+    show_raiting.short_description = 'Рейтинг'
+
 
 @admin.register(RecipeCategory)
 class RecipeCategoryAdmin(admin.ModelAdmin):

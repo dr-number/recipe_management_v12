@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Avg, Count
 
 from tinymce.models import HTMLField
 
@@ -58,6 +59,20 @@ class Recipe(BaseModel):
 
     def __str__(self) -> str:
         return self.title
+
+    @property
+    def average_rating(self):
+        result = self.comments.aggregate(average=Avg('raiting'))
+        return result['average'] or 0
+    
+    @property
+    def rating_count(self):
+        return self.comments.count()
+    
+    @property
+    def rating_distribution(self):
+        """Распределение оценок"""
+        return self.comments.values('raiting').annotate(count=Count('id')).order_by('raiting')
     
 class Comment(BaseModel):
     text = models.TextField(null=False, blank=False, max_length=250, verbose_name='Комментарий')
