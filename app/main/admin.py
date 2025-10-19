@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from main.models import User, Recipe, RecipeCategory, Comment
+from main.filters import TimeCookingFilter
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
@@ -43,8 +44,16 @@ class RecipeAdmin(admin.ModelAdmin):
         'created',
         'updated'
     ]
+    search_fields = [
+        'title'
+    ]
     autocomplete_fields = [
         'user'
+    ]
+    list_filter = [
+        'type',
+        # 'user',
+        TimeCookingFilter
     ]
 
 @admin.register(RecipeCategory)
