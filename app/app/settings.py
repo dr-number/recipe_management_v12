@@ -36,8 +36,6 @@ CORS_ALLOWED_ORIGINS = os.environ["CORS_ALLOWED_ORIGINS"].split(" ")
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 3600 # время жизни сессии (в секундах)
 
-IS_LOG_CRITICAL_DATA_PAYMENTS_SYSTEMS = int(os.getenv("IS_LOG_CRITICAL_DATA_PAYMENTS_SYSTEMS", "0"))
-
 if DEBUG:
     CORS_ALLOW_CREDENTIALS = True
     CORS_ORIGIN_ALLOW_ALL = True
