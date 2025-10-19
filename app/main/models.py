@@ -37,6 +37,13 @@ class Recipe(BaseModel):
         null=True, 
         verbose_name='Категория'
     )
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.PROTECT, 
+        blank=False, 
+        null=False, 
+        verbose_name='Пользователь'
+    )
 
     def __str__(self) -> str:
         return self.title

@@ -1,8 +1,17 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from main.models import User, Recipe, RecipeCategory, Comment
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(UserAdmin):
+    def get_personal_info_fields(self, user: User):
+        fields = User._meta.get_fields()
+        personal_info_fields = [
+            field.name for field in fields
+            if not field.is_relation
+        ]
+        return personal_info_fields
+        
     list_display = [
         'id',
         'last_name',
