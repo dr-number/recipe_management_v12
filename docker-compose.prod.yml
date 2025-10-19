@@ -1,0 +1,111 @@
+version: '3.7'
+
+services:
+  web:
+    container_name: recipe_management_web
+    restart: always
+    image: 1.0.0
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: sh -c "gunicorn --workers=17 app.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - /var/www/automatic-broker/staticfiles:/home/app/web/staticfiles
+      - /var/www/automatic-broker/static:/home/app/web/static
+      # - /root/automatic-broker/app/mediafiles:media_volume
+      - ./app/:/home/app/web/
+      - ./logs/:/home/app/web/logs/
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - db
+      - redis
+    ports:
+      - '8700:8000' #порт точно 8000 не 8881 ?
+    links:
+      - db
+
+  #для WebSockets
+  asgi:
+    container_name: recipe_management_asgi
+    restart: always
+    image: 1.0.0
+    build:
+      context: ./app
+      dockerfile: Dockerfile.no_chrome.prod
+    command: sh -c "daphne -b 0.0.0.0 -p 8001 app.asgi:application"
+    volumes:
+      - ./app/:/home/app/web/
+    env_file:
+      - ./.env.prod
+    ports:
+      - '8701:8001'
+    depends_on:
+      - web
+      - redis
+
+  db:
+    container_name: recipe_management_db
+    restart: always
+    image: postgres:14.2-alpine
+    volumes:
+      - ../recipe_management-db/db/:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod.db
+
+  redis:
+    container_name: recipe_management_redis
+    command: sh -c 'exec redis-server'
+    restart: always
+    image: redis:7.0.2-alpine
+    volumes:
+      - ../recipe_management_redis_data:/var/lib/redis/data/
+  celery_worker:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: sh -c "celery -A app worker -l info"
+    container_name: recipe_management_celery_worker
+    ports:
+      - 6800:6800
+    volumes:
+      - ./app:/home/app/web
+    depends_on:
+      - web
+      - redis
+    restart: on-failure
+    env_file:
+      - .env.prod
+  celery_beat:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: sh -c "celery -A app beat -l info"
+    container_name: recipe_management_celery_beat
+    volumes:
+      - ./app:/home/app/web
+    depends_on:
+      - web
+      - redis
+    restart: on-failure
+    env_file:
+      - .env.prod
+    
+    
+  feedback_bot:
+    container_name: recipe_management_feedback_bot
+    build:
+      context: ./app
+      dockerfile: Dockerfile.no_chrome.prod
+    restart: always
+    volumes:
+      - ./app:/home/app/web
+    env_file:
+      - ./.env.prod
+    command: python3 -u main/feedback_bot.py
+  
+  
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
