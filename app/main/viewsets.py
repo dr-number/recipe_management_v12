@@ -7,7 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from main.serializers import CreateAccountSerializer
 from main.models import User
 from main.const import CodesErrors
-from main.helpers import send_email_code
+from main.helpers import send_email_code, get_user_params
 
 class AllowAnyViewSet(ViewSet):
     throttle_classes = ()
@@ -19,9 +19,7 @@ class AllowAnyViewSet(ViewSet):
     @swagger_auto_schema(request_body=CreateAccountSerializer)
     @action(detail=False, methods=['post'])
     def create_account(self, request):
-
         serializer = CreateAccountSerializer(data=request.data, context={'request': request})
-        
         if not serializer.is_valid():
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -54,3 +52,52 @@ class AllowAnyViewSet(ViewSet):
             'is_confirmed_email': new_user.is_confirmed_email,
             'is_send_email': is_send_email
         })
+
+    @swagger_auto_schema(request_body=CheckConfirmationCodeIdSerializer)
+    @action(detail=False, methods=['post'])
+    def check_confirmation_code_id(self, request):
+        serializer = CheckConfirmationCodeIdSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        user: User = get_user_params({
+            'id': serializer.validated_data['user_id']
+        })
+        if not user:
+            return Response({
+                    'errorText': 'Пользователь не найден!'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        is_success = user.check_confirmation_code(
+            check_code=serializer.validated_data['code']
+        )
+        
+        if is_success:
+            user.is_confirmed_email = True
+            user.is_active = True
+            user.save(update_fields=['is_confirmed_email', 'is_active'])
+
+            result = {}
+            if is_user_ready_for_activation(user=user):
+                final_step_for_primary_data(user=user)
+                result.update({
+                    'token': user.token.key
+                })
+
+            result.update()
+            return Response({
+                'is_active': user.is_active,
+                'is_confirmed_email': user.is_confirmed_email,
+                'token': user.token.key
+            })
+
+        return log_error_response(request, {
+            'errorText': (
+                'Код подтверждения недействителен. Пожалуйста, убедитесь в правильности введенного кода' if is_rus else
+                'The confirmation code is invalid. Please make sure that the code entered is correct'
+            )
+        })
+

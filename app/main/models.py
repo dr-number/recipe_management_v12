@@ -50,6 +50,56 @@ class User(AbstractUser):
         self.save(update_fields=['confirmation_email'])
         return code
 
+    def check_confirmation_code(self, check_code: str) -> bool:
+        data = self.confirmation_email
+        code = data.get('code', None)
+    
+        _is_expired = False
+        if data['code_expiry']:
+            code_expiry = datetime.strptime(data['code_expiry'], _FORMAT_TIME_CODE)
+            _is_expired = datetime.now() > code_expiry
+            
+        if not code:
+            return None
+
+        if _is_expired:
+            turn_off_confirmation_code(self=self, type_data=type_data)
+
+        data = getattr(self, f'confirmation_{type_data}', {})
+        code = data.get('code', None)
+
+        if not code:
+            telegram_bot_send_msg(
+                text=(
+                    f'🛑 Код активации истек ({type_data}) check_confirmation_code (2)!\n'
+                    f'{more_info}\n{_sub_info_data}'
+                    f'Введенный код: <b>{check_code}</b>, Ожидаемый код: <b>{code}</b>\n'
+                    f'Время жизни кода:\n{_time_info}'
+                    '\n#error_check_confirmation_code'
+                ),
+                html=True,
+                chat_id=ERRORS_CHAT_ID
+            )
+            return None
+
+        if code == check_code:
+            setattr(self, f'date_last_confirmed_{type_data}', datetime.now())
+            turn_off_confirmation_code(self=self, type_data=type_data)
+            return True
+        else:
+            telegram_bot_send_msg(
+                text=(
+                    f'🛑 Введен неверный код ({type_data}) ативации check_confirmation_code!\n'
+                    f'{more_info}\n{_sub_info_data}'
+                    f'Введенный код: <b>{check_code}</b>, Ожидаемый код: <b>{code}</b>\n'
+                    f'Время жизни кода:\n{_time_info}'
+                    '\n#error_check_confirmation_code'
+                ),
+                html=True,
+                chat_id=ERRORS_CHAT_ID
+            )
+            return False
+
 class RecipeCategory(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
 

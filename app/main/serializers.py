@@ -65,3 +65,19 @@ class CreateAccountSerializer(serializers.Serializer):
             errors['password2'] = ['Пароли не совпадают']
 
         return super().validate(attrs)
+
+class CheckConfirmationCodeIdSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField(
+        label='user_id', 
+        write_only=True, 
+        required=True
+    )
+    code = serializers.CharField(
+        label='code', 
+        write_only=True, 
+        required=True,
+        allow_blank=True
+    )
+    @validate_unexpected_fields()
+    def validate(self, attrs):
+        return attrs

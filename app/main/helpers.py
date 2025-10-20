@@ -1,11 +1,13 @@
 import traceback
-from typing import Tuple
+from typing import Tuple, Union
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-
 from main.models import User
+
+def get_user_params(data: dict) -> Union[User, None]:
+    return User.objects.filter(**data).first()
 
 def send_two_email_service(
     subject_text: str, 
