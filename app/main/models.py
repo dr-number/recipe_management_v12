@@ -1,3 +1,6 @@
+import random
+from datetime import datetime, timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Avg, Count
@@ -7,6 +10,7 @@ from tinymce.models import HTMLField
 from main.const import (
     KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF, RATING_RECIPE_CHOICES
 )
+_FORMAT_TIME_CODE = '%Y-%m-%d %H:%M:%S'
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Created')
@@ -34,6 +38,17 @@ class User(AbstractUser):
     is_confirmed_email = models.BooleanField(default=False, verbose_name='Подтвердение email')
     date_confirmed_email = models.DateTimeField(blank=True, null=True, verbose_name='Дата подтвердения email')
     confirmation_email = models.JSONField(verbose_name='код-подтвердение email', blank=True, default=dict)
+
+    def new_confirmation_code_email(self) -> str:
+        code = f'{random.randrange(1, 10 ** 4):04}'
+        now = datetime.now()
+        self.confirmation_email = {
+            'code': code,
+            'code_created': now.strftime(_FORMAT_TIME_CODE),
+            'code_expiry': (now + timedelta(hours=1)).strftime(_FORMAT_TIME_CODE)
+        }
+        self.save(update_fields=['confirmation_email'])
+        return code
 
 class RecipeCategory(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')

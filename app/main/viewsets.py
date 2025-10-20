@@ -6,6 +6,8 @@ from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers import CreateAccountSerializer
 from main.models import User
+from main.const import CodesErrors
+from main.helpers import send_email_code
 
 class AllowAnyViewSet(ViewSet):
     throttle_classes = ()
@@ -41,5 +43,14 @@ class AllowAnyViewSet(ViewSet):
             email=email,
             first_name=first_name,
             last_name=last_name,
+            type=serializer.validated_data['type'],
             password=serializer.validated_data['password']
         )
+        is_send_email, _, _ = send_email_code(user=new_user)
+
+        return Response({
+            'id': new_user.id,
+            'is_active': new_user.is_active,
+            'is_confirmed_email': new_user.is_confirmed_email,
+            'is_send_email': is_send_email
+        })
