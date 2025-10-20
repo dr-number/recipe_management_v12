@@ -31,6 +31,9 @@ class User(AbstractUser):
         null=True,
         related_name='favorited_by'
     )
+    is_confirmed_email = models.BooleanField(default=False, verbose_name='Подтвердение email')
+    date_confirmed_email = models.DateTimeField(blank=True, null=True, verbose_name='Дата подтвердения email')
+    confirmation_email = models.JSONField(verbose_name='код-подтвердение email', blank=True, default=dict)
 
 class RecipeCategory(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
