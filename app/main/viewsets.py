@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
-from main.serializers import CreateAccountSerializer
+from main.serializers import (
+    CreateAccountSerializer, CheckConfirmationCodeIdSerializer, LoginSerializer
+)
 from main.models import User
 from main.const import CodesErrors
 from main.helpers import send_email_code, get_user_params
@@ -79,25 +81,49 @@ class AllowAnyViewSet(ViewSet):
             user.is_confirmed_email = True
             user.is_active = True
             user.save(update_fields=['is_confirmed_email', 'is_active'])
-
-            result = {}
-            if is_user_ready_for_activation(user=user):
-                final_step_for_primary_data(user=user)
-                result.update({
-                    'token': user.token.key
-                })
-
-            result.update()
             return Response({
                 'is_active': user.is_active,
                 'is_confirmed_email': user.is_confirmed_email,
                 'token': user.token.key
             })
 
-        return log_error_response(request, {
-            'errorText': (
-                'Код подтверждения недействителен. Пожалуйста, убедитесь в правильности введенного кода' if is_rus else
-                'The confirmation code is invalid. Please make sure that the code entered is correct'
-            )
+        return Response({
+                'errorText': 'Код подтверждения недействителен. Пожалуйста, убедитесь в правильности введенного кода'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    @swagger_auto_schema(request_body=LoginSerializer)
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        email = serializer.validated_data.get('email', '').lower()
+        password = serializer.validated_data['password']
+
+        user: User = get_user_params({
+            'is_active': True,
+            'is_confirmed_email': True,
+            'email': email,
         })
 
+        if not user or not user.is_active:
+            return Response({
+                    'errorText': 'Пользователь с такими данными не зарегистрирован. Проверьте логин.'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if user and user.is_active and user.check_password(password):
+            return Response({
+                'token': user.token.key,
+            })
+
+        return Response({
+                'errorText': 'Введены неверные данные проверьте пароль'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )

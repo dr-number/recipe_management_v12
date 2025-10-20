@@ -76,8 +76,42 @@ class CheckConfirmationCodeIdSerializer(serializers.Serializer):
         label='code', 
         write_only=True, 
         required=True,
-        allow_blank=True
+        allow_blank=False
     )
     @validate_unexpected_fields()
     def validate(self, attrs):
         return attrs
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField(
+        label="email",
+        write_only=True,
+        required=True,
+        allow_blank=False,
+    )
+    password = serializers.CharField(
+        label="password",
+        style={'input_type': 'password'},
+        trim_whitespace=False,
+        write_only=True,
+        required=True,
+    )
+
+    @validate_unexpected_fields()
+    def validate(self, attrs):
+        errors = {}
+        password = attrs.get('password')
+        email = attrs.get('email')
+        if not password:
+            errors['password'] = ['Укажите пароль']
+
+        if not attrs.get('email'):
+            errors['email'] = ['Введите email']
+            
+        if is_valid_email(email=email):
+            errors['email'] = 'Некорректный адрес электронной почты'
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return super().validate(attrs)
