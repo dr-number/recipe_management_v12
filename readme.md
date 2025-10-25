@@ -4,6 +4,9 @@
     docker exec -ti recipe_management_web python3 manage.py migrate
     docker exec -ti recipe_management_web python3 manage.py collectstatic
 
+# Url Swagger
+http://localhost:8700/swagger_doc/
+
 # Create user admin
     docker exec -ti recipe_management_web python3 manage.py seed_users
 

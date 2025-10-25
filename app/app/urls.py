@@ -21,7 +21,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path(f'admin/', admin.site.urls),
-    # path('main/', include('main.urls')),
+    path('main/', include('main.urls')),
     # path('payments/', include('payments.urls')),
     # path('documents/', include('documents.urls'))
 ]
@@ -30,9 +30,9 @@ urlpatterns = [
 if True or IS_TEST_SERVER:
     urlpatterns.append(
         path(
-            'autobroker_swagger_doc/', 
+            'swagger_doc/', 
             schema_view.with_ui('swagger', cache_timeout=0), 
-            name='autobroker_swagger_doc'
+            name='swagger_doc'
         )
     )
 
