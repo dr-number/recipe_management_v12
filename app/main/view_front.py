@@ -28,7 +28,7 @@ class CreateAccountWebView(View):
             
             try:
                 # Отправка запроса к вашему API
-                api_url = 'http://your-domain/api/create-account/'  # замените на ваш URL
+                api_url = 'http://localhost:8700/main/allow_any/create_account/'  # замените на ваш URL
                 response = requests.post(
                     api_url,
                     json=api_data,
