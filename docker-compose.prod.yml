@@ -14,7 +14,7 @@ services:
       - /var/www/automatic-broker/static:/home/app/web/static
       # - /root/automatic-broker/app/mediafiles:media_volume
       - ./app/:/home/app/web/
-      - ./logs/:/home/app/web/logs/
+      - ./app/logs/:/home/app/web/logs/
     env_file:
       - ./.env.prod
     depends_on:

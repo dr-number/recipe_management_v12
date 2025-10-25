@@ -15,7 +15,7 @@ services:
       - ./app/staticfiles/:/home/app/web/staticfiles/
       - ./app/static:/home/app/web/static
       - ./app/:/home/app/web/
-      - ./logs/:/home/app/logs/
+      - ./app/logs/:/home/app/web/logs/
     env_file:
       - ./.env.local
     depends_on:
