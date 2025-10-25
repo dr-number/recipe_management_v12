@@ -3,16 +3,24 @@
     docker exec -ti recipe_management_web python3 manage.py makemigrations
     docker exec -ti recipe_management_web python3 manage.py migrate
     docker exec -ti recipe_management_web python3 manage.py collectstatic
+
+# Create user admin
     docker exec -ti recipe_management_web python3 manage.py seed_users
 
-# shell_plus
+## Url admin panel
+    http://localhost:8700/admin/login/?next=/admin/
+
+## login
+    The value of the variable ADMIN_LOGIN in file .env.local
+
+## Password
+    The value of the variable ADMIN_PASSWORD in file .env.local
+
+# Run shell_plus
     docker exec -ti recipe_management_web python3 manage.py shell_plus --notebook
 
+# Run shell
+    docker exec -ti recipe_management_web python3 manage.py shell
+
 # For editing files created using the django application
-sudo chown -R  $USER:$USER path_to_dir
-
-# Start shell
-docker exec -ti recipe_management_web python3 manage.py shell
-
-# Seed users
-    docker exec -ti recipe_management_web python3 manage.py seed_users
+    sudo chown -R  $USER:$USER path_to_dir
