@@ -1,0 +1,261 @@
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function runInServerFetch(url, formData) {
+        const head = {
+            method: "POST",
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(formData)
+        };
+        return fetch(url, head);
+    }
+</script>
+
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function runInServerFetch(url, formData) {
+        const head = {
+            method: "POST",
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(formData)
+        };
+        return fetch(url, head);
+    }
+
+    // Основная функция для отправки формы через AJAX
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        // Собираем данные формы
+        const formData = new FormData(form);
+        const jsonData = {};
+        
+        for (let [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+
+        // Показ индикатора загрузки
+        submitBtn.textContent = 'Регистрация...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await runInServerFetch('http://localhost:8700/main/allow_any/create_account/', jsonData);
+            
+            if (response.ok) {
+                // Успешная регистрация
+                const result = await response.json();
+                
+                // Редирект на страницу успеха или другую логику
+                if (result.redirect_url) {
+                    window.location.href = result.redirect_url;
+                } else {
+                    // Если нет редиректа, показываем сообщение и обновляем страницу
+                    alert('Аккаунт успешно создан!');
+                    window.location.reload();
+                }
+            } else {
+                // Обработка ошибок валидации
+                const errorData = await response.json();
+                
+                // Показываем ошибки в форме
+                displayFormErrors(errorData);
+                
+                // Скролл к первой ошибке
+                scrollToFirstError();
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+        } finally {
+            // Восстановление кнопки
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    // Функция для отображения ошибок формы
+    function displayFormErrors(errorData) {
+        // Сначала скрываем все предыдущие ошибки
+        hideAllErrors();
+        
+        // Обрабатываем общие ошибки (не привязанные к полям)
+        if (errorData.non_field_errors) {
+            showAlertError(errorData.non_field_errors.join(', '));
+        }
+        
+        if (errorData.detail) {
+            showAlertError(errorData.detail);
+        }
+        
+        // Обрабатываем ошибки полей
+        for (const [field, errors] of Object.entries(errorData)) {
+            if (field !== 'non_field_errors' && field !== 'detail' && field !== 'code') {
+                const fieldElement = document.querySelector(`[name="${field}"]`);
+                if (fieldElement) {
+                    showFieldError(fieldElement, errors.join(', '));
+                }
+            }
+        }
+    }
+
+    // Показать ошибку поля
+    function showFieldError(fieldElement, errorMessage) {
+        // Добавляем класс ошибки к полю
+        fieldElement.classList.add('is-invalid');
+        
+        // Создаем или обновляем элемент с ошибкой
+        let errorElement = fieldElement.parentNode.querySelector('.field-error');
+        if (!errorElement) {
+            errorElement = document.createElement('div');
+            errorElement.className = 'text-danger small field-error mt-1';
+            fieldElement.parentNode.appendChild(errorElement);
+        }
+        errorElement.textContent = errorMessage;
+    }
+
+    // Показать общую ошибку в alert
+    function showAlertError(message) {
+        // Ищем существующий alert для ошибок API
+        let alertContainer = document.querySelector('.alert.alert-danger');
+        
+        if (!alertContainer) {
+            // Создаем новый alert
+            alertContainer = document.createElement('div');
+            alertContainer.className = 'alert alert-danger';
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(alertContainer, form);
+        }
+        
+        alertContainer.innerHTML = message;
+        alertContainer.style.display = 'block';
+    }
+
+    // Скрыть все ошибки
+    function hideAllErrors() {
+        // Убираем классы ошибок с полей
+        document.querySelectorAll('.is-invalid').forEach(element => {
+            element.classList.remove('is-invalid');
+        });
+        
+        // Убираем сообщения об ошибках полей
+        document.querySelectorAll('.field-error').forEach(element => {
+            element.remove();
+        });
+        
+        // Скрываем alert с ошибками (но не удаляем, чтобы сохранить структуру для Django)
+        const alertContainer = document.querySelector('.alert.alert-danger');
+        if (alertContainer && !alertContainer.hasAttribute('data-django-errors')) {
+            alertContainer.style.display = 'none';
+        }
+    }
+
+    // Скролл к первой ошибке
+    function scrollToFirstError() {
+        const firstErrorField = document.querySelector('.is-invalid');
+        if (firstErrorField) {
+            firstErrorField.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            firstErrorField.focus();
+        }
+    }
+
+    // Валидация паролей в реальном времени
+    function setupPasswordValidation() {
+        const passwordField = document.querySelector('[name="password"]');
+        const password2Field = document.querySelector('[name="password2"]');
+        
+        if (passwordField && password2Field) {
+            const validatePasswords = () => {
+                if (passwordField.value && password2Field.value && passwordField.value !== password2Field.value) {
+                    showFieldError(password2Field, 'Пароли не совпадают');
+                } else {
+                    password2Field.classList.remove('is-invalid');
+                    const errorElement = password2Field.parentNode.querySelector('.field-error');
+                    if (errorElement) {
+                        errorElement.remove();
+                    }
+                }
+            };
+            
+            passwordField.addEventListener('input', validatePasswords);
+            password2Field.addEventListener('input', validatePasswords);
+        }
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Находим форму и добавляем обработчик
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', handleFormSubmit);
+            
+            // Добавляем action если его нет
+            if (!form.action) {
+                form.action = window.location.href;
+            }
+        }
+        
+        // Настраиваем валидацию паролей
+        setupPasswordValidation();
+        
+        // Помечаем Django-errors для идентификации
+        const djangoAlert = document.querySelector('.alert.alert-danger');
+        if (djangoAlert) {
+            djangoAlert.setAttribute('data-django-errors', 'true');
+        }
+        
+        // Добавляем Bootstrap классы к полям формы если их нет
+        document.querySelectorAll('form input, form select, form textarea').forEach(field => {
+            if (!field.className.includes('form-control')) {
+                field.classList.add('form-control');
+            }
+        });
+    });
+</script>

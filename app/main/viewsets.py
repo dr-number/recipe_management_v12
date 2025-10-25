@@ -30,7 +30,8 @@ class AllowAnyViewSet(ViewSet):
         first_name = serializer.validated_data['first_name'].lower().capitalize()
         last_name = serializer.validated_data['last_name'].lower().capitalize()
 
-        if User.objects.filter(is_active=True, email=email, is_confirmed_email=True).exists():
+        #TODO если уже есть
+        if User.objects.filter(is_active=True, username=email, is_confirmed_email=True).exists():
             return Response({
                 'errorText': (
                     'Активная учетная запись с таким email уже зарегистрирована!'
