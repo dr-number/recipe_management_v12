@@ -8,7 +8,7 @@
     docker exec -ti recipe_management_web python3 manage.py seed_users
 
 ## Url admin panel
-    http://localhost:8700/admin/login/?next=/admin/
+http://localhost:8700/admin/login/?next=/admin/
 
 ## login
     The value of the variable ADMIN_LOGIN in file .env.local
