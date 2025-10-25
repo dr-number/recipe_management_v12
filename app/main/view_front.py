@@ -26,33 +26,27 @@ class CreateAccountWebView(View):
                 'type': form.cleaned_data['type']
             }
             
-            try:
-                # Отправка запроса к вашему API
-                api_url = 'http://localhost:8700/main/allow_any/create_account/'  # замените на ваш URL
-                response = requests.post(
-                    api_url,
-                    json=api_data,
-                    headers={'Content-Type': 'application/json'}
-                )
-                
-                if response.status_code == 200:
-                    # Успешная регистрация
-                    return render(request, 'registration_success.html', {
-                        'success': True,
-                        'response_data': response.json()
-                    })
-                else:
-                    # Ошибка от API
-                    error_data = response.json()
-                    return render(request, self.template_name, {
-                        'form': form,
-                        'api_errors': error_data
-                    })
-                    
-            except requests.RequestException as e:
+            
+            api_url = 'http://localhost:8700/main/allow_any/create_account/'  # замените на ваш URL
+            response = requests.post(
+                api_url,
+                json=api_data,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            if response.status_code == 200:
+                # Успешная регистрация
+                return render(request, 'registration_success.html', {
+                    'success': True,
+                    'response_data': response.json()
+                })
+            else:
+                # Ошибка от API
+                error_data = response.json()
                 return render(request, self.template_name, {
                     'form': form,
-                    'error': 'Ошибка соединения с сервером'
+                    'api_errors': error_data
                 })
+                    
         
         return render(request, self.template_name, {'form': form})
