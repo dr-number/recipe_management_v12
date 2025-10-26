@@ -5,9 +5,10 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers_lk import (
-    LkAllRecipesSerializer, LkRecipeSerializer, LkRecipeInputSerializer
+    LkAllRecipesSerializer, LkRecipeSerializer, LkRecipeInputSerializer, 
+    LkRecipeAddCommentInputSerializer
 )
-from main.models import Recipe
+from main.models import Recipe, Comment
 from main.const import CodesErrors
 from main.helpers import get_recipe_params
 from app.helpers import log_error_response
@@ -48,10 +49,42 @@ class LkAllViewSet(ViewSet):
             return log_error_response(request, {
                 'code': CodesErrors.ERROR_HELP,
                 'errorText': (
-                    'Данный запрос в техподдержку не найден!'
+                    'Данный рецепт!'
                 )
             })
 
         return Response(
             LkRecipeSerializer(recipe).data
         )
+
+    @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
+    @action(detail=False, methods=['post'])
+    def add_comment_to_recipe(self, request):
+        serializer = LkRecipeAddCommentInputSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        recipe = get_recipe_params(params={
+            'id': serializer.validated_data['id_recipe']
+        })
+
+        if not recipe:
+            return log_error_response(request, {
+                'code': CodesErrors.ERROR_HELP,
+                'errorText': (
+                    'Данный рецепт!'
+                )
+            })
+
+
+        new_comment = Comment.objects.create(
+            recipe=recipe,
+            raiting=serializer.validated_data['raiting'],
+            text=serializer.validated_data['text'],
+            user=request.user
+        )
+
+        return Response({
+            'comment_id': new_comment.id
+        })
