@@ -5,7 +5,7 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers_lk import (
-    LkAllRecipesSerializer
+    LkAllChefCategoriesRecipesSerializer
 )
 from main.models import RecipeCategory
 from main.const import CodesErrors
@@ -25,10 +25,18 @@ class LkChefViewSet(ViewSet):
     @action(detail=False, methods=['get'])
     def list_all_recipe_categories(self, request):
         return Response(
-            LkAllRecipesSerializer(
+            LkAllChefCategoriesRecipesSerializer(
                 RecipeCategory.objects.all().order_by('-created'), 
                 many=True
             ).data
         )
+
+    @swagger_auto_schema(request_body=LkAllChefCategoriesRecipesSerializer)
+    @action(detail=False, methods=['post'])
+    def add_recipe(self, request):
+        serializer = LkAllChefCategoriesRecipesSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 

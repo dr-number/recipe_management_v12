@@ -3,6 +3,8 @@ from main.models import Recipe
 from main.const import (
     RATING_RECIPE_CHOICES
 )
+from main.helpers_serializers import validate_unexpected_fields, is_valid_email, serializer_logger
+
 class LkAllRecipesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
@@ -20,6 +22,9 @@ class LkRecipeInputSerializer(serializers.Serializer):
         required=True,
         write_only=True
     )
+    @validate_unexpected_fields()
+    def validate(self, attrs):
+        return attrs
 
 class LkRecipeAddCommentInputSerializer(serializers.Serializer):
     id_recipe = serializers.IntegerField(
@@ -40,6 +45,9 @@ class LkRecipeAddCommentInputSerializer(serializers.Serializer):
         allow_blank=False,
         max_length=6000
     )
+    @validate_unexpected_fields()
+    def validate(self, attrs):
+        return attrs
 
 class LkRecipeSerializer(serializers.ModelSerializer):
     class Meta:
