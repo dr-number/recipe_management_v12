@@ -51,3 +51,38 @@ curl -X 'POST' \
   "type": "user_type_chef"
 }'
 </code>
+
+## check confirmation code
+<code>
+curl -X 'POST' \
+  'http://localhost:8700/main/allow_any/check_confirmation_code_id/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": 0,
+  "code": "string"
+}'
+</code>
+
+## update confirmation code
+<code>
+curl -X 'POST' \
+  'http://localhost:8700/main/allow_any/update_confirmation_code_id/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": 0
+}'
+</code>
+
+## login
+<code>
+curl -X 'POST' \
+  'http://localhost:8700/main/allow_any/login/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "string",
+  "password": "string"
+}'
+</code>
