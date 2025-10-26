@@ -33,3 +33,21 @@ http://localhost:8700/admin/login/?next=/admin/
     http://localhost:8700/main/front/register/
 
     http://localhost:8700/main/front/loginin/
+
+
+# CURLs
+
+`{curl} {
+    curl -X 'POST' \
+  'http://localhost:8700/main/allow_any/create_account/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "string",
+  "first_name": "string",
+  "last_name": "string",
+  "password": "string",
+  "password2": "string",
+  "type": "user_type_chef"
+}'
+}`
