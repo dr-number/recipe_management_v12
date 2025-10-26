@@ -8,7 +8,7 @@ from main.serializers_lk import (
     LkAllRecipesSerializer, LkRecipeSerializer, LkRecipeInputSerializer, 
     LkRecipeAddCommentInputSerializer
 )
-from main.models import Recipe, Comment
+from main.models import Recipe, Comment, User
 from main.const import CodesErrors
 from main.helpers import get_recipe_params
 from app.helpers import log_error_response
@@ -49,7 +49,7 @@ class LkAllViewSet(ViewSet):
             return log_error_response(request, {
                 'code': CodesErrors.ERROR_HELP,
                 'errorText': (
-                    'Данный рецепт!'
+                    'Данный рецепт не найден!'
                 )
             })
 
@@ -73,10 +73,9 @@ class LkAllViewSet(ViewSet):
             return log_error_response(request, {
                 'code': CodesErrors.ERROR_HELP,
                 'errorText': (
-                    'Данный рецепт!'
+                    'Данный рецепт не найден!'
                 )
             })
-
 
         new_comment = Comment.objects.create(
             recipe=recipe,
@@ -88,3 +87,30 @@ class LkAllViewSet(ViewSet):
         return Response({
             'comment_id': new_comment.id
         })
+
+    @swagger_auto_schema(request_body=LkRecipeInputSerializer)
+    @action(detail=False, methods=['post'])
+    def add_recipe_to_favorite(self, request):
+        serializer = LkRecipeInputSerializer(data=request.data, context={'request': request})
+        
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        recipe = get_recipe_params(params={
+            'id': serializer.validated_data['id']
+        })
+
+        if not recipe:
+            return log_error_response(request, {
+                'code': CodesErrors.ERROR_HELP,
+                'errorText': (
+                    'Данный рецепт не найден!'
+                )
+            })
+
+        user: User = request.user
+        user.favorites.add(recipe)
+        user.save(update_fields=['favorites'])
+
+        return Response('ok')
