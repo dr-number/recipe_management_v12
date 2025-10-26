@@ -90,13 +90,14 @@ class LkChefViewSet(ViewSet):
                 'errorText': 'Категория не найдена!'
             })
 
-        recipe['title']=serializer.validated_data['title']
-        recipe['html_description']=serializer.validated_data['html_description']
-        recipe['ingredients']=serializer.validated_data['ingredients']
-        recipe['steps']=serializer.validated_data['steps']
-        recipe['time_cooking']=serializer.validated_data['time_cooking']
-        recipe['type']=recipe_category
-        recipe.save()
+        recipe.save(
+            title=serializer.validated_data['title'],
+            html_description=serializer.validated_data['html_description'],
+            ingredients=serializer.validated_data['ingredients'],
+            steps=serializer.validated_data['steps'],
+            time_cooking=serializer.validated_data['time_cooking'],
+            type=recipe_category
+        )
 
         return Response('ok')
 
