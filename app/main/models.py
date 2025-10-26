@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Avg, Count
 
 from tinymce.models import HTMLField
+from rest_framework.authtoken.models import Token
+
 
 from main.const import (
     KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF, RATING_RECIPE_CHOICES
@@ -42,6 +44,11 @@ class User(AbstractUser):
     date_confirmed_email = models.DateTimeField(blank=True, null=True, verbose_name='Дата подтвердения email')
     confirmation_email = models.JSONField(verbose_name='код-подтвердение email', blank=True, default=dict)
 
+    @property
+    def token(self):
+        """Get token."""
+        return Token.objects.get_or_create(user=self)[0]
+
     def new_confirmation_code_email(self) -> str:
         code = f'{random.randrange(1, 10 ** 4):04}'
         now = datetime.now()
@@ -68,7 +75,7 @@ class User(AbstractUser):
         code = data.get('code', None)
         _time_info = ''
         _is_expired = False
-        
+
         if data['code_expiry']:
             code_expiry = datetime.strptime(data['code_expiry'], _FORMAT_TIME_CODE)
             _is_expired = datetime.now() > code_expiry
