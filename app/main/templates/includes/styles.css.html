@@ -1,3 +1,43 @@
-<styles>
+<style>
+    #confirmationModal .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
     
-</styles>
+    #confirmationModal .modal-header {
+        border-bottom: 1px solid #e9ecef;
+        padding: 1.5rem;
+    }
+    
+    #confirmationModal .modal-body {
+        padding: 1.5rem;
+    }
+    
+    #confirmation_code {
+        text-align: center;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+    
+    #resendCodeBtn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .alert {
+        border: none;
+        border-radius: 8px;
+    }
+    
+    .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    </style>

@@ -1,4 +1,6 @@
 <script>
+    let currentUserId = null;
+    
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -78,34 +80,26 @@
         for (let [key, value] of formData.entries()) {
             jsonData[key] = value;
         }
-
+    
         // Показ индикатора загрузки
         submitBtn.textContent = 'Регистрация...';
         submitBtn.disabled = true;
-
+    
         try {
             const response = await runInServerFetch('http://localhost:8700/main/allow_any/create_account/', jsonData);
             
             if (response.ok) {
                 // Успешная регистрация
                 const result = await response.json();
-                
-                // Редирект на страницу успеха или другую логику
-                if (result.redirect_url) {
-                    window.location.href = result.redirect_url;
+                if (result['id'] ? result['id'] : undefined) {
+                    showConfirmationModal(result['id']);
                 } else {
-                    // Если нет редиректа, показываем сообщение и обновляем страницу
-                    alert('Аккаунт успешно создан!');
-                    window.location.reload();
+                    alert('Ошибка создания акаунта!');
                 }
             } else {
                 // Обработка ошибок валидации
                 const errorData = await response.json();
-                
-                // Показываем ошибки в форме
                 displayFormErrors(errorData);
-                
-                // Скролл к первой ошибке
                 scrollToFirstError();
             }
         } catch (error) {
@@ -117,145 +111,180 @@
             submitBtn.disabled = false;
         }
     }
-
-    // Функция для отображения ошибок формы
-    function displayFormErrors(errorData) {
-        // Сначала скрываем все предыдущие ошибки
-        hideAllErrors();
+    
+    // Показать модальное окно подтверждения
+    function showConfirmationModal(currentUserId) {
+        // Устанавливаем user_id в скрытое поле
+        document.getElementById('confirmation_user_id').value = currentUserId;
+        const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        modal.show();
         
-        // Обрабатываем общие ошибки (не привязанные к полям)
-        if (errorData.non_field_errors) {
-            showAlertError(errorData.non_field_errors.join(', '));
-        }
-        
-        if (errorData.detail) {
-            showAlertError(errorData.detail);
-        }
-        
-        // Обрабатываем ошибки полей
-        for (const [field, errors] of Object.entries(errorData)) {
-            if (field !== 'non_field_errors' && field !== 'detail' && field !== 'code') {
-                const fieldElement = document.querySelector(`[name="${field}"]`);
-                if (fieldElement) {
-                    showFieldError(fieldElement, errors.join(', '));
-                }
-            }
-        }
+        // Фокусируемся на поле ввода кода
+        setTimeout(() => {
+            document.getElementById('confirmation_code').focus();
+        }, 500);
     }
-
-    // Показать ошибку поля
-    function showFieldError(fieldElement, errorMessage) {
-        // Добавляем класс ошибки к полю
-        fieldElement.classList.add('is-invalid');
+    
+    // Обработка отправки формы подтверждения
+    document.getElementById('confirmationForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
         
-        // Создаем или обновляем элемент с ошибкой
-        let errorElement = fieldElement.parentNode.querySelector('.field-error');
-        if (!errorElement) {
-            errorElement = document.createElement('div');
-            errorElement.className = 'text-danger small field-error mt-1';
-            fieldElement.parentNode.appendChild(errorElement);
-        }
-        errorElement.textContent = errorMessage;
-    }
-
-    // Показать общую ошибку в alert
-    function showAlertError(message) {
-        // Ищем существующий alert для ошибок API
-        let alertContainer = document.querySelector('.alert.alert-danger');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const originalText = confirmBtn.textContent;
         
-        if (!alertContainer) {
-            // Создаем новый alert
-            alertContainer = document.createElement('div');
-            alertContainer.className = 'alert alert-danger';
-            const form = document.querySelector('form');
-            form.parentNode.insertBefore(alertContainer, form);
-        }
+        // Показ индикатора загрузки
+        confirmBtn.textContent = 'Проверка...';
+        confirmBtn.disabled = true;
         
-        alertContainer.innerHTML = message;
-        alertContainer.style.display = 'block';
-    }
-
-    // Скрыть все ошибки
-    function hideAllErrors() {
-        // Убираем классы ошибок с полей
-        document.querySelectorAll('.is-invalid').forEach(element => {
-            element.classList.remove('is-invalid');
-        });
-        
-        // Убираем сообщения об ошибках полей
-        document.querySelectorAll('.field-error').forEach(element => {
-            element.remove();
-        });
-        
-        // Скрываем alert с ошибками (но не удаляем, чтобы сохранить структуру для Django)
-        const alertContainer = document.querySelector('.alert.alert-danger');
-        if (alertContainer && !alertContainer.hasAttribute('data-django-errors')) {
-            alertContainer.style.display = 'none';
-        }
-    }
-
-    // Скролл к первой ошибке
-    function scrollToFirstError() {
-        const firstErrorField = document.querySelector('.is-invalid');
-        if (firstErrorField) {
-            firstErrorField.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-            firstErrorField.focus();
-        }
-    }
-
-    // Валидация паролей в реальном времени
-    function setupPasswordValidation() {
-        const passwordField = document.querySelector('[name="password"]');
-        const password2Field = document.querySelector('[name="password2"]');
-        
-        if (passwordField && password2Field) {
-            const validatePasswords = () => {
-                if (passwordField.value && password2Field.value && passwordField.value !== password2Field.value) {
-                    showFieldError(password2Field, 'Пароли не совпадают');
-                } else {
-                    password2Field.classList.remove('is-invalid');
-                    const errorElement = password2Field.parentNode.querySelector('.field-error');
-                    if (errorElement) {
-                        errorElement.remove();
-                    }
-                }
-            };
+        try {
+            const formData = new FormData(this);
+            const jsonData = {};
             
-            passwordField.addEventListener('input', validatePasswords);
-            password2Field.addEventListener('input', validatePasswords);
+            for (let [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+            
+            const response = await runInServerFetch(
+                'http://localhost:8700/main/allow_any/check_confirmation_code_id/', 
+                jsonData
+            );
+            
+            if (response.ok) {
+                const result = await response.json();
+                
+                // Успешное подтверждение
+                showConfirmationMessage('success', 'Email успешно подтвержден!');
+                
+                // Сохраняем токен если есть
+                if (result.token) {
+                    localStorage.setItem('auth_token', result.token);
+                }
+                
+                // Закрываем модальное окно через 2 секунды и перезагружаем страницу
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
+                    modal.hide();
+                    window.location.reload();
+                }, 2000);
+                
+            } else {
+                const errorData = await response.json();
+                showConfirmationMessage('error', errorData.errorText || 'Ошибка подтверждения кода');
+            }
+            
+        } catch (error) {
+            console.error('Network error:', error);
+            showConfirmationMessage('error', 'Ошибка сети. Пожалуйста, попробуйте еще раз.');
+        } finally {
+            // Восстановление кнопки
+            confirmBtn.textContent = originalText;
+            confirmBtn.disabled = false;
         }
+    });
+    
+    // Обработка повторной отправки кода
+    document.getElementById('resendCodeBtn').addEventListener('click', async function() {
+        const resendBtn = this;
+        const originalText = resendBtn.textContent;
+        
+        if (!currentUserId) {
+            showConfirmationMessage('error', 'Ошибка: пользователь не найден');
+            return;
+        }
+        
+        // Показ индикатора загрузки
+        resendBtn.textContent = 'Отправка...';
+        resendBtn.disabled = true;
+        
+        try {
+            const response = await runInServerFetch(
+                'http://localhost:8700/main/allow_any/update_confirmation_code_id/', 
+                { user_id: currentUserId }
+            );
+            
+            if (response.ok) {
+                const result = await response.json();
+                
+                if (result.is_send_email) {
+                    showConfirmationMessage('success', 'Код подтверждения отправлен повторно!');
+                } else {
+                    showConfirmationMessage('error', 'Не удалось отправить код. Попробуйте позже.');
+                }
+            } else {
+                const errorData = await response.json();
+                showConfirmationMessage('error', errorData.errorText || 'Ошибка отправки кода');
+            }
+            
+        } catch (error) {
+            console.error('Network error:', error);
+            showConfirmationMessage('error', 'Ошибка сети. Пожалуйста, попробуйте еще раз.');
+        } finally {
+            // Восстановление кнопки с задержкой для предотвращения спама
+            setTimeout(() => {
+                resendBtn.textContent = originalText;
+                resendBtn.disabled = false;
+            }, 30000); // 30 секунд до возможности повторного запроса
+            
+            // Временно меняем текст кнопки
+            resendBtn.textContent = 'Повторная отправка через 30 сек';
+            let seconds = 29;
+            
+            const countdown = setInterval(() => {
+                resendBtn.textContent = `Повторная отправка через ${seconds} сек`;
+                seconds--;
+                
+                if (seconds < 0) {
+                    clearInterval(countdown);
+                    resendBtn.textContent = originalText;
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+    });
+    
+    // Функция для показа сообщений в модальном окне
+    function showConfirmationMessage(type, message) {
+        const messagesContainer = document.getElementById('confirmationMessages');
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        
+        messagesContainer.innerHTML = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
     }
-
+    
+    // Автоматический переход между символами кода (опционально)
+    document.getElementById('confirmation_code').addEventListener('input', function(e) {
+        // Можно добавить автоматический submit при вводе 6 символов
+        if (this.value.length === 6) {
+            document.getElementById('confirmationForm').dispatchEvent(new Event('submit'));
+        }
+    });
+    
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
-        // Находим форму и добавляем обработчик
         const form = document.querySelector('form');
-        if (form) {
+        if (form && !form.id) {
             form.addEventListener('submit', handleFormSubmit);
             
-            // Добавляем action если его нет
             if (!form.action) {
                 form.action = window.location.href;
             }
         }
         
-        // Настраиваем валидацию паролей
         setupPasswordValidation();
         
-        // Помечаем Django-errors для идентификации
         const djangoAlert = document.querySelector('.alert.alert-danger');
         if (djangoAlert) {
             djangoAlert.setAttribute('data-django-errors', 'true');
         }
         
-        // Добавляем Bootstrap классы к полям формы если их нет
         document.querySelectorAll('form input, form select, form textarea').forEach(field => {
             if (!field.className.includes('form-control')) {
                 field.classList.add('form-control');
             }
         });
     });
-</script>
+    </script>
