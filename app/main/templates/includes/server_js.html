@@ -1,3 +1,5 @@
+
+
 <script>
     let currentUserId = null;
     
@@ -17,20 +19,20 @@
         return cookieValue;
     }
 
-    function runInServerFetch(url, formData) {
-        const head = {
-            method: "POST",
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(formData)
-        };
-        return fetch(url, head);
-    }
+function runInServerFetch(url, formData) {
+    const head = {
+        method: "POST",
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(formData)
+    };
+    return fetch(url, head);
+}
 </script>
 
 
@@ -73,218 +75,141 @@
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         
-        // Собираем данные формы
-        const formData = new FormData(form);
+    const formData = new FormData(form);
+    const jsonData = {};
+    
+    for (let [key, value] of formData.entries()) {
+        jsonData[key] = value;
+    }
+
+    submitBtn.textContent = 'Регистрация...';
+    submitBtn.disabled = true;
+
+    try {
+        const response = await runInServerFetch('http://localhost:8700/main/allow_any/create_account/', jsonData);
+        
+        if (response.ok) {
+            const result = await response.json();
+            
+            if (result.user_id || result.id) {
+                currentUserId = result.user_id || result.id;
+                showConfirmationModal();
+            } else {
+                alert('Аккаунт успешно создан!');
+                window.location.reload();
+            }
+        } else {
+            const errorData = await response.json();
+            alert('Ошибка: ' + (errorData.detail || JSON.stringify(errorData)));
+        }
+    } catch (error) {
+        console.error('Network error:', error);
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+}
+
+// Показать модальное окно подтверждения
+function showConfirmationModal() {
+    document.getElementById('confirmation_user_id').value = currentUserId;
+    document.getElementById('confirmationModal').style.display = 'block';
+    document.getElementById('confirmation_code').focus();
+}
+
+// Скрыть модальное окно
+function hideConfirmationModal() {
+    document.getElementById('confirmationModal').style.display = 'none';
+}
+
+// Обработка отправки формы подтверждения
+document.getElementById('confirmationForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const confirmBtn = document.getElementById('confirmBtn');
+    const originalText = confirmBtn.textContent;
+    
+    confirmBtn.textContent = 'Проверка...';
+    confirmBtn.disabled = true;
+    
+    try {
+        const formData = new FormData(this);
         const jsonData = {};
         
         for (let [key, value] of formData.entries()) {
             jsonData[key] = value;
         }
-    
-        // Показ индикатора загрузки
-        submitBtn.textContent = 'Регистрация...';
-        submitBtn.disabled = true;
-    
-        try {
-            const response = await runInServerFetch('http://localhost:8700/main/allow_any/create_account/', jsonData);
-            
-            if (response.ok) {
-                // Успешная регистрация
-                const result = await response.json();
-                if (result['id'] ? result['id'] : undefined) {
-                    showConfirmationModal(result['id']);
-                } else {
-                    alert('Ошибка создания акаунта!');
-                }
-            } else {
-                // Обработка ошибок валидации
-                const errorData = await response.json();
-                displayFormErrors(errorData);
-                scrollToFirstError();
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-            alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
-        } finally {
-            // Восстановление кнопки
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+        
+        const response = await runInServerFetch(
+            'http://localhost:8700/main/allow_any/check_confirmation_code_id/', 
+            jsonData
+        );
+        
+        if (response.ok) {
+            const result = await response.json();
+            alert('Email успешно подтвержден!');
+            hideConfirmationModal();
+            window.location.reload();
+        } else {
+            const errorData = await response.json();
+            alert(errorData.errorText || 'Ошибка подтверждения кода');
         }
+        
+    } catch (error) {
+        console.error('Network error:', error);
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+    } finally {
+        confirmBtn.textContent = originalText;
+        confirmBtn.disabled = false;
+    }
+});
+
+// Обработка повторной отправки кода
+document.getElementById('resendCodeBtn').addEventListener('click', async function() {
+    const resendBtn = this;
+    const originalText = resendBtn.textContent;
+    
+    if (!currentUserId) {
+        alert('Ошибка: пользователь не найден');
+        return;
     }
     
-    // Показать модальное окно подтверждения
-    function showConfirmationModal(currentUserId) {
-        // Устанавливаем user_id в скрытое поле
-        document.getElementById('confirmation_user_id').value = currentUserId;
-        const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-        modal.show();
-        
-        // Фокусируемся на поле ввода кода
-        setTimeout(() => {
-            document.getElementById('confirmation_code').focus();
-        }, 500);
-    }
+    resendBtn.textContent = 'Отправка...';
+    resendBtn.disabled = true;
     
-    // Обработка отправки формы подтверждения
-    document.getElementById('confirmationForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
+    try {
+        const response = await runInServerFetch(
+            'http://localhost:8700/main/allow_any/update_confirmation_code_id/', 
+            { user_id: currentUserId }
+        );
         
-        const confirmBtn = document.getElementById('confirmBtn');
-        const originalText = confirmBtn.textContent;
-        
-        // Показ индикатора загрузки
-        confirmBtn.textContent = 'Проверка...';
-        confirmBtn.disabled = true;
-        
-        try {
-            const formData = new FormData(this);
-            const jsonData = {};
-            
-            for (let [key, value] of formData.entries()) {
-                jsonData[key] = value;
-            }
-            
-            const response = await runInServerFetch(
-                'http://localhost:8700/main/allow_any/check_confirmation_code_id/', 
-                jsonData
-            );
-            
-            if (response.ok) {
-                const result = await response.json();
-                
-                // Успешное подтверждение
-                showConfirmationMessage('success', 'Email успешно подтвержден!');
-                
-                // Сохраняем токен если есть
-                if (result.token) {
-                    localStorage.setItem('auth_token', result.token);
-                }
-                
-                // Закрываем модальное окно через 2 секунды и перезагружаем страницу
-                setTimeout(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
-                    modal.hide();
-                    window.location.reload();
-                }, 2000);
-                
+        if (response.ok) {
+            const result = await response.json();
+            if (result.is_send_email) {
+                alert('Код подтверждения отправлен повторно!');
             } else {
-                const errorData = await response.json();
-                showConfirmationMessage('error', errorData.errorText || 'Ошибка подтверждения кода');
+                alert('Не удалось отправить код. Попробуйте позже.');
             }
-            
-        } catch (error) {
-            console.error('Network error:', error);
-            showConfirmationMessage('error', 'Ошибка сети. Пожалуйста, попробуйте еще раз.');
-        } finally {
-            // Восстановление кнопки
-            confirmBtn.textContent = originalText;
-            confirmBtn.disabled = false;
-        }
-    });
-    
-    // Обработка повторной отправки кода
-    document.getElementById('resendCodeBtn').addEventListener('click', async function() {
-        const resendBtn = this;
-        const originalText = resendBtn.textContent;
-        
-        if (!currentUserId) {
-            showConfirmationMessage('error', 'Ошибка: пользователь не найден');
-            return;
+        } else {
+            const errorData = await response.json();
+            alert(errorData.errorText || 'Ошибка отправки кода');
         }
         
-        // Показ индикатора загрузки
-        resendBtn.textContent = 'Отправка...';
-        resendBtn.disabled = true;
-        
-        try {
-            const response = await runInServerFetch(
-                'http://localhost:8700/main/allow_any/update_confirmation_code_id/', 
-                { user_id: currentUserId }
-            );
-            
-            if (response.ok) {
-                const result = await response.json();
-                
-                if (result.is_send_email) {
-                    showConfirmationMessage('success', 'Код подтверждения отправлен повторно!');
-                } else {
-                    showConfirmationMessage('error', 'Не удалось отправить код. Попробуйте позже.');
-                }
-            } else {
-                const errorData = await response.json();
-                showConfirmationMessage('error', errorData.errorText || 'Ошибка отправки кода');
-            }
-            
-        } catch (error) {
-            console.error('Network error:', error);
-            showConfirmationMessage('error', 'Ошибка сети. Пожалуйста, попробуйте еще раз.');
-        } finally {
-            // Восстановление кнопки с задержкой для предотвращения спама
-            setTimeout(() => {
-                resendBtn.textContent = originalText;
-                resendBtn.disabled = false;
-            }, 30000); // 30 секунд до возможности повторного запроса
-            
-            // Временно меняем текст кнопки
-            resendBtn.textContent = 'Повторная отправка через 30 сек';
-            let seconds = 29;
-            
-            const countdown = setInterval(() => {
-                resendBtn.textContent = `Повторная отправка через ${seconds} сек`;
-                seconds--;
-                
-                if (seconds < 0) {
-                    clearInterval(countdown);
-                    resendBtn.textContent = originalText;
-                    resendBtn.disabled = false;
-                }
-            }, 1000);
-        }
-    });
-    
-    // Функция для показа сообщений в модальном окне
-    function showConfirmationMessage(type, message) {
-        const messagesContainer = document.getElementById('confirmationMessages');
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        
-        messagesContainer.innerHTML = `
-            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
+    } catch (error) {
+        console.error('Network error:', error);
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+    } finally {
+        resendBtn.textContent = originalText;
+        resendBtn.disabled = false;
     }
-    
-    // Автоматический переход между символами кода (опционально)
-    document.getElementById('confirmation_code').addEventListener('input', function(e) {
-        // Можно добавить автоматический submit при вводе 6 символов
-        if (this.value.length === 6) {
-            document.getElementById('confirmationForm').dispatchEvent(new Event('submit'));
-        }
-    });
-    
-    // Инициализация при загрузке страницы
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form');
-        if (form && !form.id) {
-            form.addEventListener('submit', handleFormSubmit);
-            
-            if (!form.action) {
-                form.action = window.location.href;
-            }
-        }
-        
-        setupPasswordValidation();
-        
-        const djangoAlert = document.querySelector('.alert.alert-danger');
-        if (djangoAlert) {
-            djangoAlert.setAttribute('data-django-errors', 'true');
-        }
-        
-        document.querySelectorAll('form input, form select, form textarea').forEach(field => {
-            if (!field.className.includes('form-control')) {
-                field.classList.add('form-control');
-            }
-        });
-    });
-    </script>
+});
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
+});
+</script>

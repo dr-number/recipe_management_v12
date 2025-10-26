@@ -47,48 +47,45 @@
     </div>
 
     <!--modal code--->
-    <div id="confirmationModal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Подтверждение email</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>На вашу почту отправлен код подтверждения. Введите его ниже:</p>
-                    
-                    <form id="confirmationForm">
-                        <input type="hidden" id="confirmation_user_id" name="user_id">
-                        
-                        <div class="mb-3">
-                            <label for="confirmation_code" class="form-label">Код подтверждения</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="confirmation_code" 
-                                name="code"
-                                placeholder="Введите 6-значный код"
-                                maxlength="6"
-                                required
-                            >
-                            <div class="form-text">Код действителен в течение 10 минут</div>
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary" id="confirmBtn">
-                                Подтвердить
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" id="resendCodeBtn">
-                                Отправить код повторно
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div id="confirmationMessages" class="mt-3"></div>
-                </div>
-            </div>
+    <!-- Модальное окно подтверждения email -->
+<div id="confirmationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; min-width: 400px;">
+        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Подтверждение email</h3>
+            <button type="button" onclick="hideConfirmationModal()" style="background: none; border: none; font-size: 20px; cursor: pointer;">×</button>
         </div>
+        
+        <p>На вашу почту отправлен код подтверждения. Введите его ниже:</p>
+        
+        <form id="confirmationForm">
+            <input type="hidden" id="confirmation_user_id" name="user_id">
+            
+            <div style="margin-bottom: 15px;">
+                <label for="confirmation_code" style="display: block; margin-bottom: 5px;">Код подтверждения</label>
+                <input 
+                    type="text" 
+                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" 
+                    id="confirmation_code" 
+                    name="code"
+                    placeholder="Введите код"
+                    required
+                >
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">Код действителен в течение 10 минут</div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button type="submit" style="padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;" id="confirmBtn">
+                    Подтвердить
+                </button>
+                <button type="button" style="padding: 10px; background: #f8f9fa; color: #333; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;" id="resendCodeBtn">
+                    Отправить код повторно
+                </button>
+            </div>
+        </form>
+        
+        <div id="confirmationMessages" style="margin-top: 15px;"></div>
     </div>
+</div>
     <!--end modal code--->
 
     {% include "includes/server_js.html" %}
