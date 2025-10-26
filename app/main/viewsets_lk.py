@@ -85,7 +85,7 @@ class LkAllViewSet(ViewSet):
         )
 
         return Response({
-            'comment_id': new_comment.id
+            'comment_id': new_comment.pk
         })
 
     @swagger_auto_schema(request_body=LkRecipeInputSerializer)
