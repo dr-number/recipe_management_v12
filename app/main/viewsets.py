@@ -5,7 +5,8 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers import (
-    CreateAccountSerializer, CheckConfirmationCodeIdSerializer, LoginSerializer
+    CreateAccountSerializer, CheckConfirmationCodeIdSerializer, LoginSerializer, 
+    UpdateConfirmationCodeIdSerializer
 )
 from main.models import User
 from main.const import CodesErrors
@@ -58,6 +59,30 @@ class AllowAnyViewSet(ViewSet):
             'is_confirmed_email': new_user.is_confirmed_email,
             'is_send_email': is_send_email
         })
+
+    @swagger_auto_schema(request_body=UpdateConfirmationCodeIdSerializer)
+    @action(detail=False, methods=['post'])
+    def update_confirmation_code_id(self, request):
+        serializer = UpdateConfirmationCodeIdSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_user_params(data={
+            'id': serializer.validated_data['user_id']
+        })
+        if not user:
+            return log_error_response(request, {
+                'errorText': (
+                    'Пользователь не найден!'
+                )
+            })
+
+        is_send_email, _, _ = send_email_code(user=user)
+        return Response({
+            'is_send_email': is_send_email
+        })
+
 
     @swagger_auto_schema(request_body=CheckConfirmationCodeIdSerializer)
     @action(detail=False, methods=['post'])

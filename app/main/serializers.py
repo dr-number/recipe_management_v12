@@ -70,6 +70,16 @@ class CreateAccountSerializer(serializers.Serializer):
 
         return super().validate(attrs)
 
+class UpdateConfirmationCodeIdSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField(
+        label='user_id', 
+        write_only=True, 
+        required=True
+    )
+    @validate_unexpected_fields()
+    def validate(self, attrs):
+        return attrs
+        
 class CheckConfirmationCodeIdSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(
         label='user_id', 
