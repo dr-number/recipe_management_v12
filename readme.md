@@ -37,8 +37,8 @@ http://localhost:8700/admin/login/?next=/admin/
 
 # CURLs
 
-`{curl} {
-    curl -X 'POST' \
+<code>
+curl -X 'POST' \
   'http://localhost:8700/main/allow_any/create_account/' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
@@ -50,4 +50,4 @@ http://localhost:8700/admin/login/?next=/admin/
   "password2": "string",
   "type": "user_type_chef"
 }'
-}`
+</code>
