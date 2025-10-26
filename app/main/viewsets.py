@@ -10,6 +10,7 @@ from main.serializers import (
 from main.models import User
 from main.const import CodesErrors
 from main.helpers import send_email_code, get_user_params
+from app.helpers import log_error_response
 
 class AllowAnyViewSet(ViewSet):
     throttle_classes = ()
@@ -31,11 +32,10 @@ class AllowAnyViewSet(ViewSet):
         last_name = serializer.validated_data['last_name'].lower().capitalize()
 
         if User.objects.filter(is_active=True, username=email, is_confirmed_email=True).exists():
-            return Response({
+            return log_error_response(request, {
                 'errorText': (
                     'Активная учетная запись с таким email уже зарегистрирована!'
-                )},
-                status=status.HTTP_400_BAD_REQUEST
+                )}
             )
 
         no_active_users = User.objects.filter(is_active=False, username=email)
@@ -62,7 +62,7 @@ class AllowAnyViewSet(ViewSet):
     @swagger_auto_schema(request_body=CheckConfirmationCodeIdSerializer)
     @action(detail=False, methods=['post'])
     def check_confirmation_code_id(self, request):
-        serializer = CheckConfirmationCodeIdSerializer(data=request.data)
+        serializer = CheckConfirmationCodeIdSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -91,7 +91,7 @@ class AllowAnyViewSet(ViewSet):
                 'token': user.token.key
             })
 
-        return Response({
+        return log_error_response(request, {
                 'errorText': 'Код подтверждения недействителен. Пожалуйста, убедитесь в правильности введенного кода'
             },
             status=status.HTTP_400_BAD_REQUEST
@@ -100,7 +100,7 @@ class AllowAnyViewSet(ViewSet):
     @swagger_auto_schema(request_body=LoginSerializer)
     @action(detail=False, methods=['post'])
     def login(self, request):
-        serializer = LoginSerializer(data=request.data)
+        serializer = LoginSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -115,7 +115,7 @@ class AllowAnyViewSet(ViewSet):
         })
 
         if not user or not user.is_active:
-            return Response({
+            return log_error_response(request, {
                     'errorText': 'Пользователь с такими данными не зарегистрирован. Проверьте логин.'
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -126,7 +126,7 @@ class AllowAnyViewSet(ViewSet):
                 'token': user.token.key,
             })
 
-        return Response({
+        return log_error_response(request, {
                 'errorText': 'Введены неверные данные проверьте пароль'
             },
             status=status.HTTP_400_BAD_REQUEST

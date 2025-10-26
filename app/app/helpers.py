@@ -8,6 +8,7 @@ from app.settings import (
     DEBUG, BOT_TOKEN, ERRORS_CHAT_ID,
     
 )
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from main.const import CodesErrors
 from datetime import datetime
 from rest_framework import status
@@ -121,6 +122,44 @@ def custom_exception_handler(exc, context):
             "errorText": _text_error
         },
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    )
+
+def log_error_response(
+    request, 
+    error_data: dict, 
+    more_error_data: dict = {}, 
+    status=status.HTTP_400_BAD_REQUEST
+    ):
+
+    _data = request.data.copy() if hasattr(request, 'data') else {}
+    _data.pop('password', None)
+    _data.pop('password2', None)
+    _data = {key: value for key, value in _data.items() if not isinstance(value, InMemoryUploadedFile)}
+
+    user = request.user
+    user_info = ''
+    if not user.is_anonymous:
+        user_info = (
+            'User\n'
+            f'is_active: {user.is_active}\n'
+            f'id: {user.id}\n'
+            f'email: {user.email}\n'
+        )
+
+    more_error_data_str = ''
+    if more_error_data:
+        more_error_data_str = f'\nmore_error_data: {json.dumps(more_error_data, indent=4, ensure_ascii=False)}'
+
+    logger.error(
+        f'\n{request.method} :: {request.build_absolute_uri()}\n'
+        f'\n{user_info}\n\n'
+        f'headers: {get_headers(request)}\n'
+        f'_data: {json.dumps(_data, indent=4, ensure_ascii=False)}\n'
+        f'error_data: {json.dumps(error_data, indent=4, ensure_ascii=False)}{more_error_data_str}'
+    )
+    return Response(
+        error_data,
+        status=status
     )
 
 def telegram_bot_send_msg(chat_id,

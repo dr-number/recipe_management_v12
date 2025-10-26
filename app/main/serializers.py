@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from main.helpers_serializers import validate_unexpected_fields, is_valid_email
+from main.helpers_serializers import validate_unexpected_fields, is_valid_email, serializer_logger
 from main.const import (
     KEY_USER_TYPES_CHOICES
 )
@@ -52,7 +52,7 @@ class CreateAccountSerializer(serializers.Serializer):
     @validate_unexpected_fields()
     def validate(self, attrs):
         errors = {}
-
+        request = self.context['request']
         email = attrs['email']
 
         if not is_valid_email(email=email):
@@ -63,6 +63,10 @@ class CreateAccountSerializer(serializers.Serializer):
         if attrs.get('password') != attrs.get('password2'):
             errors['password'] = ['Пароли не совпадают']
             errors['password2'] = ['Пароли не совпадают']
+
+        if errors:
+            serializer_logger(request=request, attrs=attrs, errors=errors)
+            raise serializers.ValidationError(errors)
 
         return super().validate(attrs)
 
@@ -100,6 +104,7 @@ class LoginSerializer(serializers.Serializer):
     @validate_unexpected_fields()
     def validate(self, attrs):
         errors = {}
+        request = self.context['request']
         password = attrs.get('password')
         email = attrs.get('email')
         if not password:
@@ -112,6 +117,7 @@ class LoginSerializer(serializers.Serializer):
             errors['email'] = 'Некорректный адрес электронной почты'
 
         if errors:
+            serializer_logger(request=request, attrs=attrs, errors=errors)
             raise serializers.ValidationError(errors)
 
         return super().validate(attrs)
