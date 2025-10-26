@@ -5,6 +5,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from main.models import User
+from app.helpers import telegram_bot_send_msg
+from app.settings import ERRORS_CHAT_ID, HOST
 
 def get_user_params(data: dict) -> Union[User, None]:
     return User.objects.filter(**data).first()
@@ -98,17 +100,17 @@ def send_email_code(user: User) -> Tuple[bool, str, str]:
         send_to=[user.email]
     )
 
-    if False and not is_send_email:
+    if not is_send_email:
         telegram_bot_send_msg(
             text=(
-                f'<b>[Autopilot]</b> Error send_email_code\n'
+                f'<b>[Recipe]</b> Error send_email_code\n'
                 f'is send email: <b>{is_send_email}</b>\n'
                 f'Send to: <b>{send_to_str}</b>\n'
-                f'<b>Phone number:</b>{user.phone} <b>Is phone confirmed:</b>{user.is_confirmed_phone}\n'
+              
                 f'Is staff: <b>{user.is_staff}</b>\n'
-                f'{get_url_admin()}/auth/user/{user.id}/change/'
+                f'{HOST}/admin/main/user/{user.id}/change/'
                 f'{error_send}'
-                f'\n#Отправка_писем_с_автоброкера'
+                f'\n#Отправка_писем'
             ),
             chat_id=ERRORS_CHAT_ID,
             html=True

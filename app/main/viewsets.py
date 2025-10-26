@@ -42,7 +42,7 @@ class AllowAnyViewSet(ViewSet):
         if no_active_users:
             no_active_users.delete()
 
-        new_user = User.objects.create_user(
+        new_user: User = User.objects.create_user(
             username=email,
             email=email,
             first_name=first_name,

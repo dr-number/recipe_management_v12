@@ -58,7 +58,7 @@ def get_admin_user_info(request, user) -> str:
             )
 
         return (
-            f"[<b>Autopilot</b>]\n{request_info}{user_info}"
+            f"[<b>Recipe</b>]\n{request_info}{user_info}"
             f"<b>date:</b> {datetime.now().strftime('%d-%m-%Y (%A) %H:%M:%S')}\n"
         )
     except:

@@ -21,6 +21,7 @@ class BaseModel(models.Model):
 
 
 class User(AbstractUser):
+    is_active = models.BooleanField(default=False, verbose_name='Активная учетная запись')
     type = models.CharField(
         max_length=35,
         choices=KEY_USER_TYPES_CHOICES,

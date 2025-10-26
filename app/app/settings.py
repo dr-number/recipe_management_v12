@@ -28,6 +28,7 @@ DEBUG_EMAIL = os.getenv("DEBUG_EMAIL", "")
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1 localhost db").split(" ")
 
 PROTOCOL = os.getenv("PROTOCOL", 'http')
+HOST = os.environ["HOST"]
 SITE_DOMAIN = os.environ["SITE_DOMAIN"]
 CSRF_TRUSTED_ORIGINS = [] + ([f'{PROTOCOL}://{SITE_DOMAIN}', f'{PROTOCOL}://{SITE_DOMAIN}:8000'] if SITE_DOMAIN else [])
 CORS_ALLOWED_ORIGINS = os.environ["CORS_ALLOWED_ORIGINS"].split(" ")
@@ -282,11 +283,6 @@ DJANGO_ALLOW_ASYNC_UNSAFE = DEBUG # only use in development
 # TELEGRAM BOT
 BOT_TOKEN = os.environ['BOT_TOKEN']
 FEEDBACK_BOT_TOKEN = os.environ['FEEDBACK_BOT_TOKEN']
-TAG_ASK_QUESTION = '#autopilot_ask_question'
-TAG_REPORT_USER = '#autopilot_report_user'
-TAG_REPORT_WAITING_MANUAL_VERIFICATION = '#autopilot_report_waiting_manual_verification'
-TAG_NOT_ALLOW_TRADE_USER = '#autopilot_not_allow_trade_user'
-TAG_REPORT_CUSTOM_DOCUMENT = '#autopilot_report_custom_document'
 ERRORS_CHAT_ID = os.environ['ERRORS_CHAT_ID']
 MESSAGES_CHAT_ID = os.environ['MESSAGES_CHAT_ID']
 MESSAGES_CHAT_ID_FOR_DEBUG_MESSAGES_CODE = os.getenv('MESSAGES_CHAT_FOR_DEBUG_MESSAGES_CODE', '') 

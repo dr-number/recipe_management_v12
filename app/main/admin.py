@@ -31,6 +31,7 @@ class UserAdmin(UserAdmin):
     filter_horizontal = UserAdmin.filter_horizontal + ('favorites',)
     list_display = (
         'id',
+        'email',
         'last_name',
         'first_name',
         'type'
