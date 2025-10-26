@@ -30,7 +30,6 @@ class AllowAnyViewSet(ViewSet):
         first_name = serializer.validated_data['first_name'].lower().capitalize()
         last_name = serializer.validated_data['last_name'].lower().capitalize()
 
-        #TODO если уже есть
         if User.objects.filter(is_active=True, username=email, is_confirmed_email=True).exists():
             return Response({
                 'errorText': (
@@ -38,6 +37,10 @@ class AllowAnyViewSet(ViewSet):
                 )},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        no_active_users = User.objects.filter(is_active=False, username=email)
+        if no_active_users:
+            no_active_users.delete()
 
         new_user = User.objects.create_user(
             username=email,
