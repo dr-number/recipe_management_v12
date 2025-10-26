@@ -53,7 +53,7 @@ class LkAllViewSet(ViewSet):
                 )
             })
 
-        return Response(
+        return Response( #TODO добавить комментарии
             LkRecipeSerializer(recipe).data
         )
 
@@ -114,3 +114,14 @@ class LkAllViewSet(ViewSet):
         user.save(update_fields=['favorites'])
 
         return Response('ok')
+
+    @swagger_auto_schema()
+    @action(detail=False, methods=['get'])
+    def get_list_my_favorites(self, request):
+        #TODO
+        return Response(
+            LkAllRecipesSerializer(
+                Recipe.objects.all().order_by('-created'), 
+                many=True
+            ).data
+        )
