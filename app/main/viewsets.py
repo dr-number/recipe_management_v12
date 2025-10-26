@@ -105,8 +105,9 @@ class AllowAnyViewSet(ViewSet):
         )
         
         if is_success:
+            user.is_confirmed_email = True
             user.is_active = True
-            user.save(update_fields=['is_active'])
+            user.save(update_fields=['is_confirmed_email', 'is_active'])
             return Response({
                 'is_active': user.is_active,
                 'is_confirmed_email': user.is_confirmed_email,
