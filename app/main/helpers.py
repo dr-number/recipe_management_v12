@@ -4,7 +4,7 @@ from typing import Tuple, Union
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-from main.models import User
+from main.models import User, Recipe
 from app.helpers import telegram_bot_send_msg
 from app.settings import (
     DEBUG, ERRORS_CHAT_ID, HOST, IS_SEND_TO_DEBUG_EMAILS, DEBUG_EMAILS, DEBUG_EMAIL, 
@@ -14,6 +14,9 @@ from app.help_logger import logger
 
 def get_user_params(data: dict) -> Union[User, None]:
     return User.objects.filter(**data).first()
+
+def get_recipe_params(data: dict) -> Union[Recipe, None]:
+    return Recipe.objects.filter(**data).first()
 
 def save_file(text: str, save_file: str) -> bool:
     try:

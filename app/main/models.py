@@ -131,6 +131,10 @@ class RecipeCategory(BaseModel):
     def __str__(self) -> str:
         return self.title
 
+    class Meta: 
+        verbose_name = "Категория рецепта"
+        verbose_name_plural = "Категории рецептов"
+
 class Recipe(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
     html_description = HTMLField(verbose_name='Описание')
@@ -196,3 +200,9 @@ class Comment(BaseModel):
         null=False, 
         verbose_name='Пользователь'
     )
+
+    class Meta: 
+        verbose_name = "Комментарий к рецепту"
+        verbose_name_plural = "Комментарии к рецептам"
+
+    
