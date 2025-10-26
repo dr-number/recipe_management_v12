@@ -96,12 +96,10 @@ class AllowAnyViewSet(ViewSet):
             'id': serializer.validated_data['user_id']
         })
         if not user:
-            return Response({
-                    'errorText': 'Пользователь не найден!'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+             return log_error_response(request, {
+                'errorText': 'Пользователь не найден!'
+            })
+            
         is_success = user.check_confirmation_code(
             check_code=serializer.validated_data['code']
         )
@@ -117,10 +115,8 @@ class AllowAnyViewSet(ViewSet):
             })
 
         return log_error_response(request, {
-                'errorText': 'Код подтверждения недействителен. Пожалуйста, убедитесь в правильности введенного кода'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            'errorText': 'Код подтверждения недействителен. Пожалуйста, убедитесь в правильности введенного кода'
+        })
 
     @swagger_auto_schema(request_body=LoginSerializer)
     @action(detail=False, methods=['post'])
@@ -141,10 +137,8 @@ class AllowAnyViewSet(ViewSet):
 
         if not user or not user.is_active:
             return log_error_response(request, {
-                    'errorText': 'Пользователь с такими данными не зарегистрирован. Проверьте логин.'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                'errorText': 'Пользователь с такими данными не зарегистрирован. Проверьте логин.'
+            })
 
         if user and user.is_active and user.check_password(password):
             return Response({
@@ -152,7 +146,5 @@ class AllowAnyViewSet(ViewSet):
             })
 
         return log_error_response(request, {
-                'errorText': 'Введены неверные данные проверьте пароль'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            'errorText': 'Введены неверные данные проверьте пароль'
+        })
