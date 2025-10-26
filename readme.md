@@ -36,7 +36,7 @@ http://localhost:8700/admin/login/?next=/admin/
 
 
 # CURLs
-
+## create account
 <code>
 curl -X 'POST' \
   'http://localhost:8700/main/allow_any/create_account/' \
