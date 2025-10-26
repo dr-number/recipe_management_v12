@@ -10,6 +10,8 @@ from tinymce.models import HTMLField
 from main.const import (
     KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF, RATING_RECIPE_CHOICES
 )
+from app.settings import ERRORS_CHAT_ID
+
 _FORMAT_TIME_CODE = '%Y-%m-%d %H:%M:%S'
 
 class BaseModel(models.Model):
@@ -51,29 +53,44 @@ class User(AbstractUser):
         self.save(update_fields=['confirmation_email'])
         return code
 
+    def turn_off_confirmation_code(self):
+        self.confirmation_email = {
+            'code': None,
+            'code_created': None,
+            'code_expiry': None
+        }
+        self.save(update_fields=['confirmation_email'])
+
     def check_confirmation_code(self, check_code: str) -> bool:
+        from main.helpers import telegram_bot_send_msg
+
         data = self.confirmation_email
         code = data.get('code', None)
-    
+        _time_info = ''
         _is_expired = False
+        
         if data['code_expiry']:
             code_expiry = datetime.strptime(data['code_expiry'], _FORMAT_TIME_CODE)
             _is_expired = datetime.now() > code_expiry
+            _time_info = (
+                f"Просрочен: <b>{_is_expired}</b>\n"
+                f"Now: <b>{datetime.now().strftime(_FORMAT_TIME_CODE)}</b>\n"
+                f"code_expiry: <b>{code_expiry.strftime(_FORMAT_TIME_CODE)}</b>"
+            )
             
         if not code:
             return None
 
         if _is_expired:
-            turn_off_confirmation_code(self=self, type_data=type_data)
+            self.turn_off_confirmation_code()
 
-        data = getattr(self, f'confirmation_{type_data}', {})
+        data = self.confirmation_email
         code = data.get('code', None)
 
         if not code:
             telegram_bot_send_msg(
                 text=(
-                    f'🛑 Код активации истек ({type_data}) check_confirmation_code (2)!\n'
-                    f'{more_info}\n{_sub_info_data}'
+                    f'🛑 Код активации истек check_confirmation_code (2)!\n'
                     f'Введенный код: <b>{check_code}</b>, Ожидаемый код: <b>{code}</b>\n'
                     f'Время жизни кода:\n{_time_info}'
                     '\n#error_check_confirmation_code'
@@ -84,14 +101,14 @@ class User(AbstractUser):
             return None
 
         if code == check_code:
-            setattr(self, f'date_last_confirmed_{type_data}', datetime.now())
-            turn_off_confirmation_code(self=self, type_data=type_data)
+            self.date_confirmed_email = datetime.now()
+            self.save(update_fields=['date_confirmed_email'])
+            self.turn_off_confirmation_code()
             return True
         else:
             telegram_bot_send_msg(
                 text=(
-                    f'🛑 Введен неверный код ({type_data}) ативации check_confirmation_code!\n'
-                    f'{more_info}\n{_sub_info_data}'
+                    f'🛑 Введен неверный код  check_confirmation_code!\n'
                     f'Введенный код: <b>{check_code}</b>, Ожидаемый код: <b>{code}</b>\n'
                     f'Время жизни кода:\n{_time_info}'
                     '\n#error_check_confirmation_code'
