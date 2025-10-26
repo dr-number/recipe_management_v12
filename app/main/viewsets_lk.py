@@ -118,10 +118,10 @@ class LkAllViewSet(ViewSet):
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
     def get_list_my_favorites(self, request):
-        #TODO
+        user: User = request.user
         return Response(
             LkAllRecipesSerializer(
-                Recipe.objects.all().order_by('-created'), 
+                user.favorites.order_by('-created'), 
                 many=True
             ).data
         )
