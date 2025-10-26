@@ -93,7 +93,8 @@ class AllowAnyViewSet(ViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
         
         user: User = get_user_params({
-            'id': serializer.validated_data['user_id']
+            'id': serializer.validated_data['user_id'],
+            'is_confirmed_email': False
         })
         if not user:
              return log_error_response(request, {

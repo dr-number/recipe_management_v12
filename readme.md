@@ -27,3 +27,9 @@ http://localhost:8700/admin/login/?next=/admin/
 
 # For editing files created using the django application
     sudo chown -R  $USER:$USER path_to_dir
+
+
+# Pages
+    http://localhost:8700/main/front/register/
+
+    http://localhost:8700/main/front/loginin/

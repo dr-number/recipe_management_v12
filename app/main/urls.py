@@ -9,4 +9,5 @@ router.register('allow_any', viewsets.AllowAnyViewSet, basename='allow_any')
 urlpatterns = [
     path('', include(router.urls)),
     path('front/register/', view_front.CreateAccountWebView.as_view(), name='front_register'),
+    path('front/loginin/', view_front.LogininWebView.as_view(), name='front_loginin'),
 ]
