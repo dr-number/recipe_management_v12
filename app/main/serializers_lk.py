@@ -1,9 +1,22 @@
 from rest_framework import serializers
-from main.models import Recipe
+from main.models import Recipe, Comment
 from main.const import (
     RATING_RECIPE_CHOICES
 )
 from main.helpers_serializers import validate_unexpected_fields, is_valid_email, serializer_logger
+
+class LkAllCommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'text',
+            'raiting',
+            'recipe',
+            'user',
+            'created',
+            'updated'
+        ]
 
 class LkAllRecipesSerializer(serializers.ModelSerializer):
     class Meta:

@@ -6,7 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers_lk import (
     LkAllRecipesSerializer, LkRecipeSerializer, LkRecipeInputSerializer, 
-    LkRecipeAddCommentInputSerializer
+    LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer
 )
 from main.models import Recipe, Comment, User
 from main.const import CodesErrors
@@ -88,6 +88,17 @@ class LkAllViewSet(ViewSet):
             'comment_id': new_comment.pk
         })
 
+    @swagger_auto_schema()
+    @action(detail=False, methods=['get'])
+    def get_list_my_comments(self, request):
+        user: User = request.user
+        return Response(
+            LkAllRecipesSerializer(
+                user.favorites.order_by('-created'), 
+                many=True
+            ).data
+        )
+
     @swagger_auto_schema(request_body=LkRecipeInputSerializer)
     @action(detail=False, methods=['post'])
     def add_recipe_to_favorite(self, request):
@@ -117,11 +128,12 @@ class LkAllViewSet(ViewSet):
 
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
-    def get_list_my_favorites(self, request):
-        user: User = request.user
+    def get_list_my_comments(self, request):
         return Response(
-            LkAllRecipesSerializer(
-                user.favorites.order_by('-created'), 
+            LkAllCommentsSerializer(
+                Comment.objects.filter(user=request.user).order_by('-created'), 
                 many=True
             ).data
         )
+
+    
