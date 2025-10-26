@@ -5,11 +5,11 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers_lk import (
-    LkAllChefCategoriesRecipesSerializer
+    LkAllChefCategoriesRecipesSerializer, LkChefAddRecipeInputSerializer
 )
-from main.models import RecipeCategory
+from main.models import RecipeCategory, Recipe
 from main.const import CodesErrors
-from main.helpers import get_recipe_params
+from main.helpers import get_recipe_category_params
 from app.helpers import log_error_response
 
 from main.permissions import IsChefUser
@@ -31,12 +31,34 @@ class LkChefViewSet(ViewSet):
             ).data
         )
 
-    @swagger_auto_schema(request_body=LkAllChefCategoriesRecipesSerializer)
+    @swagger_auto_schema(request_body=LkChefAddRecipeInputSerializer)
     @action(detail=False, methods=['post'])
     def add_recipe(self, request):
-        serializer = LkAllChefCategoriesRecipesSerializer(data=request.data, context={'request': request})
+        serializer = LkChefAddRecipeInputSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        recipe_category = get_recipe_category_params(data={
+            'id': serializer.validated_data['id_category_recipe']
+        })
+        if not recipe_category:
+             return log_error_response(request, {
+                'errorText': 'Категория не найдена!'
+            })
+
+        new_recipe = Recipe.objects.create(
+            title=serializer.validated_data['title'],
+            html_description=serializer.validated_data['html_description'],
+            ingredients=serializer.validated_data['ingredients'],
+            steps=serializer.validated_data['steps'],
+            time_cooking=serializer.validated_data['time_cooking'],
+            type=recipe_category,
+            user=request.user
+        )
+
+        return Response({
+            'recipe_id': new_recipe.pk
+        })
 
 
