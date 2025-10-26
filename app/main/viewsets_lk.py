@@ -31,7 +31,7 @@ class LkAllViewSet(ViewSet):
             ).data
         )
 
-    @swagger_auto_schema(request_body=LkRecipeInputSerializer)
+    # @swagger_auto_schema(request_body=LkRecipeInputSerializer)
     @action(detail=False, methods=['get'])
     def get_recipe(self, request):
         query_params = request.query_params.dict()
@@ -135,5 +135,3 @@ class LkAllViewSet(ViewSet):
                 many=True
             ).data
         )
-
-    

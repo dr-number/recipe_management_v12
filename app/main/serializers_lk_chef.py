@@ -46,8 +46,7 @@ class LkChefAddRecipeInputSerializer(serializers.Serializer):
     time_cooking = serializers.TimeField(
         label='time_cooking', 
         write_only=True, 
-        required=True,
-        allow_blank=False
+        required=True
     )
     id_category_recipe = serializers.IntegerField(
         required=True,

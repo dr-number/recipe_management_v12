@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
-from main.serializers_lk import (
-    LkAllChefCategoriesRecipesSerializer, LkChefAddRecipeInputSerializer, 
+from main.serializers_lk_chef import (
+    LkChefCategoriesRecipesSerializer, LkChefAddRecipeInputSerializer, 
     LkChefUpdateRecipeInputSerializer
 )
 from main.models import RecipeCategory, Recipe
@@ -26,7 +26,7 @@ class LkChefViewSet(ViewSet):
     @action(detail=False, methods=['get'])
     def list_all_recipe_categories(self, request):
         return Response(
-            LkAllChefCategoriesRecipesSerializer(
+            LkChefCategoriesRecipesSerializer(
                 RecipeCategory.objects.all().order_by('-created'), 
                 many=True
             ).data
