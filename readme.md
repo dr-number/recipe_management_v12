@@ -38,51 +38,47 @@ http://localhost:8700/admin/login/?next=/admin/
 # CURLs
 ## create account
 <code>
-curl -X 'POST' \
+curl -X POST \
   'http://localhost:8700/main/allow_any/create_account/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "email": "string",
-  "first_name": "string",
-  "last_name": "string",
-  "password": "string",
-  "password2": "string",
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+  "email": "dr.number@yandex.ru",
+  "first_name": "Иванов",
+  "last_name": "Иван",
+  "password": "MyPassword0",
+  "password2": "MyPassword0",
   "type": "user_type_chef"
 }'
 </code>
 
 ## check confirmation code
 <code>
-curl -X 'POST' \
+curl -X POST \
   'http://localhost:8700/main/allow_any/check_confirmation_code_id/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "user_id": 0,
-  "code": "string"
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+  "user_id": 30,
+  "code": "2519"
 }'
 </code>
 
 ## update confirmation code
 <code>
-curl -X 'POST' \
+curl -X POST \
   'http://localhost:8700/main/allow_any/update_confirmation_code_id/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "user_id": 0
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+  "user_id": 30
 }'
 </code>
 
 ## login
 <code>
-curl -X 'POST' \
+curl -X POST \
   'http://localhost:8700/main/allow_any/login/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "email": "string",
-  "password": "string"
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+  "email": "dr.number@yandex.ru",
+  "password": "MyPassword0"
 }'
 </code>

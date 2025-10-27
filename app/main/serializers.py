@@ -120,10 +120,10 @@ class LoginSerializer(serializers.Serializer):
         if not password:
             errors['password'] = ['Укажите пароль']
 
-        if not attrs.get('email'):
+        if not email:
             errors['email'] = ['Введите email']
             
-        if is_valid_email(email=email):
+        if not is_valid_email(email=email):
             errors['email'] = 'Некорректный адрес электронной почты'
 
         if errors:

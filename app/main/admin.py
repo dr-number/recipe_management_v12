@@ -32,9 +32,11 @@ class UserAdmin(UserAdmin):
     list_display = (
         'id',
         'email',
+        'is_confirmed_email',
         'last_name',
         'first_name',
-        'type'
+        'type',
+        'is_active'
     )
 
 @admin.register(Recipe)
@@ -44,6 +46,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'title',
         'type',
         'time_cooking',
+        'user',
         # 'show_raiting',
         'created',
         'updated'
