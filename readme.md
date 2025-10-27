@@ -85,6 +85,12 @@ For all users
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
 
+## get recipe
+curl -X GET \
+  'http://localhost:8700/main/lk_all/get_recipe/?id=4' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: token MyToken'
+
 
 For Chef
 ## list all recipe categories
