@@ -54,7 +54,7 @@ class LkAllViewSet(ViewSet):
             })
 
         return Response(RecipeWithCommentsSerializer(recipe).data)
-        
+
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
     @action(detail=False, methods=['post'])
@@ -89,11 +89,10 @@ class LkAllViewSet(ViewSet):
 
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
-    def get_list_my_favorites(self, request):
-        user: User = request.user
+    def get_list_my_comments(self, request):
         return Response(
-            LkAllRecipesSerializer(
-                user.favorites.order_by('-created'), 
+            LkAllCommentsSerializer(
+                Comment.objects.filter(user=request.user).order_by('-created'), 
                 many=True
             ).data
         )
@@ -107,13 +106,13 @@ class LkAllViewSet(ViewSet):
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        recipe = get_recipe_params(params={
+        recipe = get_recipe_params(data={
             'id': serializer.validated_data['id']
         })
 
         if not recipe:
             return log_error_response(request, {
-                'code': CodesErrors.ERROR_HELP,
+                'code': CodesErrors.NOT_FOUND,
                 'errorText': (
                     'Данный рецепт не найден!'
                 )
@@ -121,16 +120,16 @@ class LkAllViewSet(ViewSet):
 
         user: User = request.user
         user.favorites.add(recipe)
-        user.save(update_fields=['favorites'])
 
         return Response('ok')
 
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
-    def get_list_my_comments(self, request):
+    def get_list_my_favorites(self, request):
+        user: User = request.user
         return Response(
-            LkAllCommentsSerializer(
-                Comment.objects.filter(user=request.user).order_by('-created'), 
+            LkAllRecipesSerializer(
+                user.favorites.order_by('-created'), 
                 many=True
             ).data
         )

@@ -102,6 +102,20 @@ For all users
       "text": "Очень вкусно"
     }'
 
+## get my comments
+    curl -X GET \
+    'http://localhost:8700/main/lk_all/get_list_my_comments/' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: token MyToken'
+
+## add recipe to favorite
+    curl -X POST \
+      'http://localhost:8700/main/lk_all/add_recipe_to_favorite/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken' \
+      --data-raw '{
+      "id": 4
+    }'
 
 For Chef
 ## list all recipe categories
