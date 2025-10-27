@@ -36,7 +36,8 @@ class UserAdmin(UserAdmin):
         'last_name',
         'first_name',
         'type',
-        'is_active'
+        'is_active',
+        'token'
     )
 
 @admin.register(Recipe)

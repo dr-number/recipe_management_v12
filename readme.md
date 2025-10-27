@@ -36,6 +36,8 @@ http://localhost:8700/admin/login/?next=/admin/
 
 
 # CURLs
+
+Registration and login
 ## create account
     curl -X POST \
       'http://localhost:8700/main/allow_any/create_account/' \
@@ -74,3 +76,11 @@ http://localhost:8700/admin/login/?next=/admin/
       "email": "dr.number@yandex.ru",
       "password": "MyPassword0"
     }'
+
+
+Chef
+## list all recipe categories
+    curl -X GET \
+      'http://localhost:8700/main/lk_chef/list_all_recipe_categories/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken'
