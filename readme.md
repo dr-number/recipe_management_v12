@@ -78,7 +78,15 @@ Registration and login
     }'
 
 
-Chef
+For all users
+## list all recipes
+    curl -X GET \
+      'http://localhost:8700/main/lk_all/list_all_recipes/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken'
+
+
+For Chef
 ## list all recipe categories
     curl -X GET \
       'http://localhost:8700/main/lk_chef/list_all_recipe_categories/' \
@@ -98,7 +106,6 @@ Chef
       "time_cooking": "00:30:00",
       "html_description": "<p><img src=\"data:image/jpeg;base64,/9j/4......KR3qwN5UXqf//Z\"></p>"
     }'
-
 
 ## update recipe
     curl -X POST \
