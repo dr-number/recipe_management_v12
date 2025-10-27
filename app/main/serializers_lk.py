@@ -77,3 +77,17 @@ class LkRecipeSerializer(serializers.ModelSerializer):
             'created',
             'updated'
         ]
+
+class RecipeWithCommentsSerializer(serializers.Serializer):
+    recipe = LkRecipeSerializer()
+    comments = LkAllCommentsSerializer(many=True)
+    comments_count = serializers.IntegerField()
+    
+    def to_representation(self, instance):
+        comments = Comment.objects.filter(recipe=instance).order_by('-created')
+        
+        return {
+            'recipe': LkRecipeSerializer(instance).data,
+            'comments_count': comments.count(),
+            'comments': LkAllCommentsSerializer(comments, many=True).data
+        }

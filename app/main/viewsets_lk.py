@@ -5,7 +5,7 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers_lk import (
-    LkAllRecipesSerializer, LkRecipeSerializer, LkRecipeInputSerializer, 
+    LkAllRecipesSerializer, RecipeWithCommentsSerializer, LkRecipeInputSerializer, 
     LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer
 )
 from main.models import Recipe, Comment, User
@@ -41,7 +41,7 @@ class LkAllViewSet(ViewSet):
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        recipe = get_recipe_params(data={
+        recipe: Recipe = get_recipe_params(data={
             'id': serializer.validated_data['id']
         })
 
@@ -53,9 +53,8 @@ class LkAllViewSet(ViewSet):
                 )
             })
 
-        return Response( #TODO добавить комментарии
-            LkRecipeSerializer(recipe).data
-        )
+        return Response(RecipeWithCommentsSerializer(recipe).data)
+        
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
     @action(detail=False, methods=['post'])
@@ -90,7 +89,7 @@ class LkAllViewSet(ViewSet):
 
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
-    def get_list_my_comments(self, request):
+    def get_list_my_favorites(self, request):
         user: User = request.user
         return Response(
             LkAllRecipesSerializer(
