@@ -37,19 +37,17 @@ http://localhost:8700/admin/login/?next=/admin/
 
 # CURLs
 ## create account
-<code>
-curl -X POST \
-  'http://localhost:8700/main/allow_any/create_account/' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-  "email": "dr.number@yandex.ru",
-  "first_name": "Иванов",
-  "last_name": "Иван",
-  "password": "MyPassword0",
-  "password2": "MyPassword0",
-  "type": "user_type_chef"
-}'
-</code>
+    curl -X POST \
+      'http://localhost:8700/main/allow_any/create_account/' \
+      --header 'Content-Type: application/json' \
+      --data-raw '{
+      "email": "dr.number@yandex.ru",
+      "first_name": "Иванов",
+      "last_name": "Иван",
+      "password": "MyPassword0",
+      "password2": "MyPassword0",
+      "type": "user_type_chef"
+    }'
 
 ## check confirmation code
 <code>
