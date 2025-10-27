@@ -65,13 +65,13 @@ class LkAllViewSet(ViewSet):
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        recipe = get_recipe_params(params={
+        recipe = get_recipe_params(data={
             'id': serializer.validated_data['id_recipe']
         })
 
         if not recipe:
             return log_error_response(request, {
-                'code': CodesErrors.ERROR_HELP,
+                'code': CodesErrors.NOT_FOUND,
                 'errorText': (
                     'Данный рецепт не найден!'
                 )

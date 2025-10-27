@@ -86,10 +86,21 @@ For all users
       --header 'Authorization: token MyToken'
 
 ## get recipe
-curl -X GET \
-  'http://localhost:8700/main/lk_all/get_recipe/?id=4' \
-  --header 'Content-Type: application/json' \
-  --header 'Authorization: token MyToken'
+    curl -X GET \
+      'http://localhost:8700/main/lk_all/get_recipe/?id=4' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken'
+
+## add comment to recipe
+    curl -X POST \
+      'http://localhost:8700/main/lk_all/add_comment_to_recipe/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken' \
+      --data-raw '{
+      "id_recipe": 4,
+      "raiting": 5,
+      "text": "Очень вкусно"
+    }'
 
 
 For Chef
