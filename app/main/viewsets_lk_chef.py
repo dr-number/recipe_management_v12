@@ -70,13 +70,13 @@ class LkChefViewSet(ViewSet):
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        recipe: Recipe = get_recipe_params(params={
+        recipe: Recipe = get_recipe_params(data={
             'id': serializer.validated_data['id']
         })
 
         if not recipe:
             return log_error_response(request, {
-                'code': CodesErrors.ERROR_HELP,
+                'code': CodesErrors.NOT_FOUND,
                 'errorText': (
                     'Данный рецепт не найден!'
                 )
@@ -90,14 +90,22 @@ class LkChefViewSet(ViewSet):
                 'errorText': 'Категория не найдена!'
             })
 
-        recipe.save(
-            title=serializer.validated_data['title'],
-            html_description=serializer.validated_data['html_description'],
-            ingredients=serializer.validated_data['ingredients'],
-            steps=serializer.validated_data['steps'],
-            time_cooking=serializer.validated_data['time_cooking'],
-            type=recipe_category
-        )
+        recipe.__dict__.update({
+            'title': serializer.validated_data['title'],
+            'html_description': serializer.validated_data['html_description'],
+            'ingredients': serializer.validated_data['ingredients'],
+            'steps': serializer.validated_data['steps'],
+            'time_cooking': serializer.validated_data['time_cooking'],
+            'type': recipe_category
+        })
+        recipe.save(update_fields=[
+            'title',
+            'html_description',
+            'ingredients',
+            'steps',
+            'time_cooking',
+            'type'
+        ])
 
         return Response('ok')
 
