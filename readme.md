@@ -117,6 +117,12 @@ For all users
       "id": 4
     }'
 
+## get list my favorites
+    curl -X GET \
+      'http://localhost:8700/main/lk_all/get_list_my_favorites/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken'
+
 For Chef
 ## list all recipe categories
     curl -X GET \
