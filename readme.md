@@ -50,33 +50,27 @@ http://localhost:8700/admin/login/?next=/admin/
     }'
 
 ## check confirmation code
-<code>
-curl -X POST \
-  'http://localhost:8700/main/allow_any/check_confirmation_code_id/' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-  "user_id": 30,
-  "code": "2519"
-}'
-</code>
+    curl -X POST \
+      'http://localhost:8700/main/allow_any/check_confirmation_code_id/' \
+      --header 'Content-Type: application/json' \
+      --data-raw '{
+      "user_id": 30,
+      "code": "2519"
+    }'
 
 ## update confirmation code
-<code>
-curl -X POST \
-  'http://localhost:8700/main/allow_any/update_confirmation_code_id/' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-  "user_id": 30
-}'
-</code>
+    curl -X POST \
+      'http://localhost:8700/main/allow_any/update_confirmation_code_id/' \
+      --header 'Content-Type: application/json' \
+      --data-raw '{
+      "user_id": 30
+    }'
 
 ## login
-<code>
-curl -X POST \
-  'http://localhost:8700/main/allow_any/login/' \
-  --header 'Content-Type: application/json' \
-  --data-raw '{
-  "email": "dr.number@yandex.ru",
-  "password": "MyPassword0"
-}'
-</code>
+    curl -X POST \
+      'http://localhost:8700/main/allow_any/login/' \
+      --header 'Content-Type: application/json' \
+      --data-raw '{
+      "email": "dr.number@yandex.ru",
+      "password": "MyPassword0"
+    }'
