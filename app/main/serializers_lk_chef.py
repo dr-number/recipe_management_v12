@@ -26,8 +26,7 @@ class LkChefAddRecipeInputSerializer(serializers.Serializer):
         label='html_description', 
         write_only=True, 
         required=True,
-        allow_blank=False,
-        max_length=40000
+        allow_blank=False
     )
     ingredients = serializers.CharField(
         label='ingredients', 

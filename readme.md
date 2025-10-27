@@ -84,3 +84,17 @@ Chef
       'http://localhost:8700/main/lk_chef/list_all_recipe_categories/' \
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
+
+## add recipe
+    curl -X POST \
+      'http://localhost:8700/main/lk_chef/add_recipe/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken' \
+      --data-raw '{
+      "title": "Грибной суп",
+      "ingredients": "Грибы, мясо, картошка, лук",
+      "steps": "Берем и готовим",
+      "id_category_recipe": 2,
+      "time_cooking": "00:30:00",
+      "html_description": "<p><img src=\"data:image/jpeg;base64,/9j/4......KR3qwN5UXqf//Z\"></p>"
+    }'
