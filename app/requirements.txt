@@ -16,4 +16,4 @@ django-redis==6.0.0
 drf-yasg==1.21.11
 telebot==0.0.5
 django-tinymce==4.1.0
-
+traitlets==5.9.0

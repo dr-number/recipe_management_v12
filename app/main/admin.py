@@ -67,38 +67,38 @@ class RecipeAdmin(admin.ModelAdmin):
 
     show_raiting.short_description = 'Рейтинг'
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
+    # def get_queryset(self, request):
+    #     qs = super().get_queryset(request)
+    #     if request.user.is_superuser:
+    #         return qs
        
-        return qs.filter(user=request.user)
+    #     return qs.filter(user=request.user)
 
-    def get_readonly_fields(self, request, obj: User = None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        if not request.user.is_superuser:
-            readonly_fields.append('user')
-        return readonly_fields
+    # def get_readonly_fields(self, request, obj: User = None):
+    #     readonly_fields = super().get_readonly_fields(request, obj)
+    #     if not request.user.is_superuser:
+    #         readonly_fields.append('user')
+    #     return readonly_fields
 
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.user = request.user
-        super().save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     if not change:
+    #         obj.user = request.user
+    #     super().save_model(request, obj, form, change)
     
-    def has_change_permission(self, request, obj=None):
-        if obj and not request.user.is_superuser:
-            return obj.user == request.user
-        return super().has_change_permission(request, obj)
+    # def has_change_permission(self, request, obj=None):
+    #     if obj and not request.user.is_superuser:
+    #         return obj.user == request.user
+    #     return super().has_change_permission(request, obj)
     
-    def has_delete_permission(self, request, obj=None):
-        if obj and not request.user.is_superuser:
-            return obj.user == request.user
-        return super().has_delete_permission(request, obj)
+    # def has_delete_permission(self, request, obj=None):
+    #     if obj and not request.user.is_superuser:
+    #         return obj.user == request.user
+    #     return super().has_delete_permission(request, obj)
     
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "user" and not request.user.is_superuser:
-            kwargs["queryset"] = User.objects.filter(id=request.user.id)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     if db_field.name == "user" and not request.user.is_superuser:
+    #         kwargs["queryset"] = User.objects.filter(id=request.user.id)
+    #     return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(RecipeCategory)
