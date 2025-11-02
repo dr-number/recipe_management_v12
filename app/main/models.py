@@ -3,10 +3,15 @@ from datetime import datetime, timedelta
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models import Avg, Count
+from django.db.models import Avg
+from django.dispatch import receiver
+
+from django.db.models.signals import post_save
+
 
 from tinymce.models import HTMLField
 from rest_framework.authtoken.models import Token
+
 
 
 from main.const import (
@@ -124,6 +129,14 @@ class User(AbstractUser):
                 chat_id=ERRORS_CHAT_ID
             )
             return False
+
+@receiver(post_save, sender=User)
+def save_user(sender, instance: User, created, **kwargs):
+    should_be_staff = instance.type == KEY_USER_TYPE_CHEF
+    User.objects.filter(id=instance.id).update(is_staff=should_be_staff)
+
+    
+
 
 class RecipeCategory(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
