@@ -204,7 +204,7 @@ class Comment(BaseModel):
         null=False,
         blank=False
     )
-    recipe = models.OneToOneField(
+    recipe = models.ForeignKey(
         to=Recipe,
         on_delete=models.PROTECT, 
         blank=False, 

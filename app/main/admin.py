@@ -90,7 +90,6 @@ class CommentAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
         'id',
         'text',
         'raiting',
-        'recipe',
         'user',
         'created',
         'updated'
