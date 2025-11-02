@@ -79,13 +79,13 @@ class RecipeAdmin(admin.ModelAdmin):
         readonly_fields = super().get_readonly_fields(request, obj)
         if not request.user.is_superuser:
             readonly_fields.append('user')
-        return readonly_fields
+        return list(set(readonly_fields))
 
     def save_model(self, request, obj, form, change):
         if request.user.is_superuser:
             super().save_model(request, obj, form, change)
             return
-                
+
         if not change:
             obj.user = request.user
         super().save_model(request, obj, form, change)
