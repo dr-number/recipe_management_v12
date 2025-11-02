@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db.models import Avg, Q, Count
+from django.db.models import Avg, Q, Count, F
 
 class TimeCookingFilter(admin.SimpleListFilter):
     title = 'Время приготовления'
@@ -39,7 +39,10 @@ class RatingFilter(admin.SimpleListFilter):
         
         if value == 'no_rating':
             return queryset.annotate(
-                avg_rating=Avg('comment__raiting')
+                avg_rating=Avg(
+                    'comment__raiting',
+                    filter=~Q(comment__user=F('user'))
+                )
             ).filter(
                 Q(avg_rating__isnull=True) | Q(avg_rating=0)
             )
@@ -50,14 +53,20 @@ class RatingFilter(admin.SimpleListFilter):
                 '2': (2.00, 2.99),
                 '3': (3.00, 3.99),
                 '4': (4.00, 4.99),
-                '5': (5.00, 5.00),  # Только 5.00
+                '5': (5.00, 5.00),
             }
             
             min_rating, max_rating = rating_ranges[value]
             
             return queryset.annotate(
-                avg_rating=Avg('comment__raiting'),
-                comment_count=Count('comment')
+                avg_rating=Avg(
+                    'comment__raiting',
+                    filter=~Q(comment__user=F('user'))  # Исключаем комментарии автора
+                ),
+                comment_count=Count(
+                    'comment',
+                    filter=~Q(comment__user=F('user'))  # Также исключаем из подсчета комментариев
+                )
             ).filter(
                 avg_rating__gte=min_rating,
                 avg_rating__lte=max_rating,
