@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.db.models import Avg, Count
-from django.db import models
+from django.db.models import Avg, Q, Count
 
 class TimeCookingFilter(admin.SimpleListFilter):
     title = 'Время приготовления'
@@ -27,25 +26,42 @@ class RatingFilter(admin.SimpleListFilter):
     
     def lookups(self, request, model_admin):
         return (
-            ('0', 'Без рейтинга'),
-            ('1', '1+ звезда'),
-            ('2', '2+ звезды'),
-            ('3', '3+ звезды'),
-            ('4', '4+ звезды'),
-            ('5', '5 звезд'),
+            ('no_rating', 'Без рейтинга'),
+            ('1', '1 звезда (1.00-1.99)'),
+            ('2', '2 звезды (2.00-2.99)'),
+            ('3', '3 звезды (3.00-3.99)'),
+            ('4', '4 звезды (4.00-4.99)'),
+            ('5', '5 звезд (5.00)'),
         )
     
     def queryset(self, request, queryset):
-        _value = self.value()
-        if _value == '0':
-            return queryset.annotate(
-                rating_count=Count('comment')
-            ).filter(rating_count=0)
+        value = self.value()
         
-        elif _value:
-            min_rating = float(_value)
+        if value == 'no_rating':
             return queryset.annotate(
                 avg_rating=Avg('comment__raiting')
-            ).filter(avg_rating__gte=min_rating)
+            ).filter(
+                Q(avg_rating__isnull=True) | Q(avg_rating=0)
+            )
+        
+        elif value:
+            rating_ranges = {
+                '1': (1.00, 1.99),
+                '2': (2.00, 2.99),
+                '3': (3.00, 3.99),
+                '4': (4.00, 4.99),
+                '5': (5.00, 5.00),  # Только 5.00
+            }
+            
+            min_rating, max_rating = rating_ranges[value]
+            
+            return queryset.annotate(
+                avg_rating=Avg('comment__raiting'),
+                comment_count=Count('comment')
+            ).filter(
+                avg_rating__gte=min_rating,
+                avg_rating__lte=max_rating,
+                avg_rating__isnull=False
+            ).exclude(comment_count=0)
         
         return queryset
