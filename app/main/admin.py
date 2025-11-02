@@ -46,7 +46,7 @@ class RecipeAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
         'id',
         'title',
         'type',
-        'time_cooking',
+        'show_text_time_cooking',
         'user',
         'show_raiting',
         'created',
@@ -68,6 +68,11 @@ class RecipeAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
         return obj.get_raiting()
 
     show_raiting.short_description = 'Рейтинг'
+
+    def show_text_time_cooking(self, obj: Recipe):
+        return obj.text_time_cooking()
+
+    show_text_time_cooking.short_description = 'Время приготовления'
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'user' and not request.user.is_superuser:

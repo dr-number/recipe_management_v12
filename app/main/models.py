@@ -183,6 +183,18 @@ class Recipe(BaseModel):
     def __str__(self) -> str:
         return self.title
 
+    def text_time_cooking(self):
+        hours = self.time_cooking.hour
+        minutes = self.time_cooking.minute
+        
+        parts = []
+        if hours > 0:
+            parts.append(f"{hours} ч.")
+        if minutes > 0:
+            parts.append(f"{minutes} мин.")
+        
+        return ' '.join(parts) if parts else "0 мин."
+
     def get_comments(self):
         return Comment.objects.filter(recipe=self).order_by('-created')
 
