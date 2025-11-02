@@ -8,7 +8,6 @@ from django.dispatch import receiver
 
 from django.db.models.signals import post_save
 
-
 from tinymce.models import HTMLField
 from rest_framework.authtoken.models import Token
 
@@ -132,11 +131,18 @@ class User(AbstractUser):
 
 @receiver(post_save, sender=User)
 def save_user(sender, instance: User, created, **kwargs):
+    from main.permissions import get_or_create_admin_shef
+
     if instance.is_superuser:
         return
 
     should_be_staff = instance.type == KEY_USER_TYPE_CHEF
     User.objects.filter(id=instance.id).update(is_staff=should_be_staff)
+
+    if should_be_staff:
+        instance.groups.add(get_or_create_admin_shef())
+    else:
+        instance.groups.remove('admin_shef')
 
 
 

@@ -20,7 +20,7 @@ def get_or_create_admin_shef():
             'view_recipe', 'add_recipe', 'change_recipe', 'delete_recipe',
         ]
     )
-    admin_group, created = Group.objects.get_or_create(name='get_or_create_admin_shef')
+    admin_group, created = Group.objects.get_or_create(name='admin_shef')
     admin_group.permissions.set(permissions)
     return admin_group
 

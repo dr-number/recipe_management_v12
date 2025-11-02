@@ -62,6 +62,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'type',
         TimeCookingFilter
     )
+    readonly_fields = []
     def show_raiting(self, obj: Recipe):
         return obj.get_raiting()
 
@@ -81,6 +82,10 @@ class RecipeAdmin(admin.ModelAdmin):
         return readonly_fields
 
     def save_model(self, request, obj, form, change):
+        if request.user.is_superuser:
+            super().save_model(request, obj, form, change)
+            return
+                
         if not change:
             obj.user = request.user
         super().save_model(request, obj, form, change)
