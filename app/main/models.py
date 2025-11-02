@@ -132,10 +132,13 @@ class User(AbstractUser):
 
 @receiver(post_save, sender=User)
 def save_user(sender, instance: User, created, **kwargs):
+    if instance.is_superuser:
+        return
+
     should_be_staff = instance.type == KEY_USER_TYPE_CHEF
     User.objects.filter(id=instance.id).update(is_staff=should_be_staff)
 
-    
+
 
 
 class RecipeCategory(BaseModel):
