@@ -142,7 +142,7 @@ def save_user(sender, instance: User, created, **kwargs):
     if should_be_staff:
         instance.groups.add(get_or_create_admin_shef())
     else:
-        instance.groups.remove('admin_shef')
+        instance.groups.remove(get_or_create_admin_shef())
 
 
 

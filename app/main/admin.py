@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from main.models import User, Recipe, RecipeCategory, Comment
 from main.filters import TimeCookingFilter
-
+from main.permissions import ChefUserRestrictedAdmin
 @admin.register(User)
 class UserAdmin(UserAdmin):
     def get_personal_info_fields(self, user: User):
@@ -41,7 +41,7 @@ class UserAdmin(UserAdmin):
     )
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
     list_display = (
         'id',
         'title',
@@ -68,43 +68,11 @@ class RecipeAdmin(admin.ModelAdmin):
 
     show_raiting.short_description = 'Рейтинг'
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-       
-        return qs.filter(user=request.user)
-
-    def get_readonly_fields(self, request, obj: User = None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        if not request.user.is_superuser:
-            readonly_fields.append('user')
-        return list(set(readonly_fields))
-
-    def save_model(self, request, obj, form, change):
-        if request.user.is_superuser:
-            super().save_model(request, obj, form, change)
-            return
-
-        if not change:
-            obj.user = request.user
-        super().save_model(request, obj, form, change)
-    
-    def has_change_permission(self, request, obj=None):
-        if obj and not request.user.is_superuser:
-            return obj.user == request.user
-        return super().has_change_permission(request, obj)
-    
-    def has_delete_permission(self, request, obj=None):
-        if obj and not request.user.is_superuser:
-            return obj.user == request.user
-        return super().has_delete_permission(request, obj)
-    
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "user" and not request.user.is_superuser:
+        if db_field.name == 'user' and not request.user.is_superuser:
             kwargs["queryset"] = User.objects.filter(id=request.user.id)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
+  
 
 @admin.register(RecipeCategory)
 class RecipeCategoryAdmin(admin.ModelAdmin):
@@ -116,7 +84,7 @@ class RecipeCategoryAdmin(admin.ModelAdmin):
     )
 
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
     list_display = (
         'id',
         'text',
@@ -135,4 +103,11 @@ class CommentAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
        
-        return qs.filter(user=request.user)
+        return qs.filter(user=request.user, recipe__user=request.user)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'recipe' and not request.user.is_superuser:
+            kwargs["queryset"] = Recipe.objects.filter(
+                user__id=request.user.id
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
