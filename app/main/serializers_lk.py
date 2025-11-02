@@ -82,12 +82,14 @@ class RecipeWithCommentsSerializer(serializers.Serializer):
     recipe = LkRecipeSerializer()
     comments = LkAllCommentsSerializer(many=True)
     comments_count = serializers.IntegerField()
+    rating = serializers.FloatField()
     
-    def to_representation(self, instance):
-        comments = Comment.objects.filter(recipe=instance).order_by('-created')
-        
+    def to_representation(self, instance: Recipe):
+        comments = instance.get_comments()
+        comments_count = comments.count()
         return {
             'recipe': LkRecipeSerializer(instance).data,
-            'comments_count': comments.count(),
-            'comments': LkAllCommentsSerializer(comments, many=True).data
+            'comments_count': comments_count,
+            'comments': LkAllCommentsSerializer(comments, many=True).data,
+            'rating': instance.get_raiting()
         }

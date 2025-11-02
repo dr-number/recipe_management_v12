@@ -164,19 +164,18 @@ class Recipe(BaseModel):
     def __str__(self) -> str:
         return self.title
 
-    @property
-    def average_rating(self):
-        result = self.comments.aggregate(average=Avg('raiting'))
-        return result['average'] or 0
-    
-    @property
-    def rating_count(self):
-        return self.comments.count()
-    
-    @property
-    def rating_distribution(self):
-        """Распределение оценок"""
-        return self.comments.values('raiting').annotate(count=Count('id')).order_by('raiting')
+    def get_comments(self):
+        return Comment.objects.filter(recipe=self).order_by('-created')
+
+    def get_raiting(self):
+        average_rating = Comment.objects.filter(recipe=self).exclude(user=self.user).aggregate(
+            avg_rating=Avg('raiting')
+        )['avg_rating']
+                               
+        if average_rating is not None:
+            return round(average_rating, 2)
+        
+        return 0
     
 class Comment(BaseModel):
     text = models.TextField(null=False, blank=False, max_length=250, verbose_name='Комментарий')
