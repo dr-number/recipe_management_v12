@@ -48,7 +48,7 @@ class RecipeAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
         'type',
         'time_cooking',
         'user',
-        # 'show_raiting',
+        'show_raiting',
         'created',
         'updated'
     )

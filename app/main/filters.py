@@ -36,13 +36,14 @@ class RatingFilter(admin.SimpleListFilter):
         )
     
     def queryset(self, request, queryset):
-        if self.value() == '0':
+        _value = self.value()
+        if _value == '0':
             return queryset.annotate(
                 rating_count=Count('comment')
             ).filter(rating_count=0)
         
-        elif self.value():
-            min_rating = float(self.value())
+        elif _value:
+            min_rating = float(_value)
             return queryset.annotate(
                 avg_rating=Avg('comment__raiting')
             ).filter(avg_rating__gte=min_rating)
