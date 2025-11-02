@@ -144,9 +144,6 @@ def save_user(sender, instance: User, created, **kwargs):
     else:
         instance.groups.remove(get_or_create_admin_shef())
 
-
-
-
 class RecipeCategory(BaseModel):
     title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
 

@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import Avg, Count
+from django.db import models
 
 class TimeCookingFilter(admin.SimpleListFilter):
     title = 'Время приготовления'
@@ -18,3 +20,31 @@ class TimeCookingFilter(admin.SimpleListFilter):
             return queryset.filter(time_cooking__range=('00:30:00', '01:00:00'))
         if self.value() == 'long':
             return queryset.filter(time_cooking__gt='01:00:00')
+
+class RatingFilter(admin.SimpleListFilter):
+    title = 'Рейтинг'
+    parameter_name = 'rating'
+    
+    def lookups(self, request, model_admin):
+        return (
+            ('0', 'Без рейтинга'),
+            ('1', '1+ звезда'),
+            ('2', '2+ звезды'),
+            ('3', '3+ звезды'),
+            ('4', '4+ звезды'),
+            ('5', '5 звезд'),
+        )
+    
+    def queryset(self, request, queryset):
+        if self.value() == '0':
+            return queryset.annotate(
+                rating_count=Count('comment')
+            ).filter(rating_count=0)
+        
+        elif self.value():
+            min_rating = float(self.value())
+            return queryset.annotate(
+                avg_rating=Avg('comment__raiting')
+            ).filter(avg_rating__gte=min_rating)
+        
+        return queryset

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from main.models import User, Recipe, RecipeCategory, Comment
-from main.filters import TimeCookingFilter
+from main.filters import TimeCookingFilter, RatingFilter
 from main.permissions import ChefUserRestrictedAdmin
 @admin.register(User)
 class UserAdmin(UserAdmin):
@@ -60,7 +60,8 @@ class RecipeAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
     ]
     list_filter = (
         'type',
-        TimeCookingFilter
+        TimeCookingFilter,
+        RatingFilter
     )
     readonly_fields = []
     def show_raiting(self, obj: Recipe):
