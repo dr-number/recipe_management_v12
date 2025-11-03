@@ -28,6 +28,13 @@ http://localhost:8700/admin/login/?next=/admin/
 # For editing files created using the django application
     sudo chown -R  $USER:$USER path_to_dir
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/chef_and_admin.png">
+      <p align="center">Permission in admin panel</p>
+   </p>
+</figure>
+
 
 # Pages
     http://localhost:8700/main/front/register/
