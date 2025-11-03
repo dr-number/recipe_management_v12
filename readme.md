@@ -46,6 +46,7 @@ http://localhost:8700/admin/login/?next=/admin/
    </p>
 </figure>
 
+# Admin panel
 <figure>
    <p align="center">
       <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/chef_and_admin.png">
@@ -74,6 +75,13 @@ http://localhost:8700/admin/login/?next=/admin/
    </p>
 </figure>
 
+# Test send email
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/test_send_email_from_jupiter_notebook.png">
+      <p align="center">Test send email from jupiter notebook in localhost</p>
+   </p>
+</figure>
 
 
 # Pages
