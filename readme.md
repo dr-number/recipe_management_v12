@@ -1,3 +1,13 @@
+# Task
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/task-1.png">
+   </p>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/task-2.png">
+   </p>
+</figure>
+
 # Initial setup
     docker-compose -f docker-compose.local.yml --env-file .env.local up --build
     docker exec -ti recipe_management_web python3 manage.py makemigrations
