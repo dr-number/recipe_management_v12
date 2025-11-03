@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import render
+from django.template.loader import render_to_string
 
 from main.serializers_lk import (
     LkAllRecipesSerializer, RecipeWithCommentsSerializer, LkRecipeInputSerializer, 
@@ -46,6 +47,23 @@ class LkAllViewSet(ViewSet):
         return render(request, 'lk.html', {
             'user': LkAllUserOutputSerializer(request.user).data,
             
+        })
+    
+    @action(detail=False, methods=['get'])
+    def get_lk_list_all_recipes(self, request):
+        list_all_recipes = LkAllRecipesSerializer(
+            Recipe.objects.all().order_by('-created'), 
+            many=True
+        ).data
+
+        recipes = ''
+        for item in list_all_recipes:
+            recipes += render_to_string('includes/items/recipt.html', {
+                    'item' : item
+            })
+            
+        return render(request, 'includes/list_all_recipes.html', {
+            'recipes': recipes
         })
 
     # @swagger_auto_schema(request_body=LkRecipeInputSerializer)
