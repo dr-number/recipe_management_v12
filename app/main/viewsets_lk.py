@@ -6,7 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from main.serializers_lk import (
     LkAllRecipesSerializer, RecipeWithCommentsSerializer, LkRecipeInputSerializer, 
-    LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer
+    LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer, LkAllUserOutputSerializer
 )
 from main.models import Recipe, Comment, User
 from main.const import CodesErrors
@@ -28,6 +28,15 @@ class LkAllViewSet(ViewSet):
             LkAllRecipesSerializer(
                 Recipe.objects.all().order_by('-created'), 
                 many=True
+            ).data
+        )
+
+    @swagger_auto_schema()
+    @action(detail=False, methods=['get'])
+    def get_user_info(self, request):
+        return Response(
+            LkAllUserOutputSerializer(
+                request.user
             ).data
         )
 

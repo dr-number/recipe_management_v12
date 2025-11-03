@@ -169,6 +169,13 @@ Registration and login
 
 
 For all users
+
+## get user info
+    curl -X GET \
+      'http://localhost:8700/main/lk_all/get_user_info/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken'
+
 ## list all recipes
     curl -X GET \
       'http://localhost:8700/main/lk_all/list_all_recipes/' \
