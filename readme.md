@@ -122,6 +122,13 @@ Registration and login
       "code": "2519"
     }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/registration_and_update_conformation_code.png">
+      <p align="center">Registration and update conformation code</p>
+   </p>
+</figure>
+
 ## update confirmation code
     curl -X POST \
       'http://localhost:8700/main/allow_any/update_confirmation_code_id/' \

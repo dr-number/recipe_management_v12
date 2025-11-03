@@ -56,7 +56,7 @@ def send_two_email_service(
     if DEBUG and IS_SEND_TO_DEBUG_EMAILS and DEBUG_EMAILS:
         send_to = DEBUG_EMAILS
         print(f'Send letter to debug emails:\n{DEBUG_EMAILS}')
-    elif DEBUG:
+    elif False and DEBUG:
         send_to = [DEBUG_EMAIL]
         print(f'Send letter to debug email:\n{DEBUG_EMAIL}')
 
@@ -113,7 +113,6 @@ def send_email_code(user: User) -> Tuple[bool, str, str]:
                 f'<b>[Recipe]</b> Error send_email_code\n'
                 f'is send email: <b>{is_send_email}</b>\n'
                 f'Send to: <b>{send_to_str}</b>\n'
-              
                 f'Is staff: <b>{user.is_staff}</b>\n'
                 f'{HOST}/admin/main/user/{user.id}/change/'
                 f'{error_send}'
