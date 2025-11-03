@@ -98,6 +98,13 @@ Registration and login
       "type": "user_type_chef"
     }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/registration_error_user_already_exist.png">
+      <p align="center">Registration error user already exist</p>
+   </p>
+</figure>
+
 ## check confirmation code
     curl -X POST \
       'http://localhost:8700/main/allow_any/check_confirmation_code_id/' \
