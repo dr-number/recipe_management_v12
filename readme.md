@@ -77,9 +77,9 @@ http://localhost:8700/admin/login/?next=/admin/
 
 
 # Pages
-    http://localhost:8700/main/front/register/
+http://localhost:8700/main/front/register/
 
-    http://localhost:8700/main/front/loginin/
+http://localhost:8700/main/front/loginin/
 
 
 # CURLs
