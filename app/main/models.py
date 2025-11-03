@@ -54,6 +54,9 @@ class User(AbstractUser):
             KEY_USER_TYPES_CHOICES_DICT.get(self.type, 'Неизвестно')
         )
 
+    def is_chef(self) -> bool:
+        return self.type == KEY_USER_TYPE_CHEF
+
     @property
     def token(self):
         """Get token."""
@@ -188,6 +191,9 @@ class Recipe(BaseModel):
 
     def __str__(self) -> str:
         return self.title
+
+    def get_title_category(self) -> str:
+        return self.type.title
 
     def text_time_cooking(self):
         hours = self.time_cooking.hour

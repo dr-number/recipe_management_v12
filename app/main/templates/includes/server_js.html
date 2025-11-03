@@ -245,30 +245,30 @@
     });
 
     async function renderLkPage() {
-    try {
-        const token = localStorage.getItem('auth_token');
-        
-        const response = await fetch('http://localhost:8700/main/lk_all/get_lk/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `token ${token}`
-            }
-        });
+        try {
+            const token = localStorage.getItem('auth_token');
+            
+            const response = await fetch('http://localhost:8700/main/lk_all/get_lk/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `token ${token}`
+                }
+            });
 
-        if (response.ok) {
-            const html = await response.text();
-            
-            // Заменяем содержимое страницы
-            document.documentElement.innerHTML = html;
-            
-            // Обновляем URL без перезагрузки
-            window.history.pushState({}, '', '/lk/');
-        } else {
-            throw new Error('Ошибка загрузки ЛК');
+            if (response.ok) {
+                const html = await response.text();
+                
+                // Заменяем содержимое страницы
+                document.documentElement.innerHTML = html;
+                
+                // Обновляем URL без перезагрузки
+                window.history.pushState({}, '', '/lk/');
+            } else {
+                throw new Error('Ошибка загрузки ЛК');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
         }
-    } catch (error) {
-        console.error('Ошибка:', error);
     }
-}
     </script>

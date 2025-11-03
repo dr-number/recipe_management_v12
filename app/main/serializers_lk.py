@@ -7,9 +7,13 @@ from main.helpers_serializers import validate_unexpected_fields, is_valid_email,
 
 class LkAllUserOutputSerializer(serializers.ModelSerializer):
     type_text = serializers.SerializerMethodField()
+    is_chef = serializers.SerializerMethodField()
 
-    def get_type_text(self, obj: User):
+    def get_type_text(self, obj: User) -> str:
         return obj.get_type_text()
+
+    def get_is_chef(self, obj: User) -> bool:
+        return obj.is_chef()
 
     class Meta:
         model = User
@@ -18,6 +22,7 @@ class LkAllUserOutputSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'type_text',
+            'is_chef',
             'date_joined'
         ]
 
@@ -35,13 +40,22 @@ class LkAllCommentsSerializer(serializers.ModelSerializer):
         ]
 
 class LkAllRecipesSerializer(serializers.ModelSerializer):
+    text_time_cooking = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+
+    def get_text_time_cooking(self, obj: Recipe) -> str:
+        return obj.text_time_cooking()
+
+    def get_category(self, obj: Recipe) -> str:
+        return obj.get_title_category()
     class Meta:
         model = Recipe
         fields = [
             'id',
             'title',
-            'type',
+            'category',
             'user',
+            'text_time_cooking',
             'created',
             'updated'
         ]

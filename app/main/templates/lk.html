@@ -13,6 +13,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="mb-0">Личный кабинет</h4>
+
+                        <a href="">Все рецепты</a>
+                        <a href="">Мои коментарии</a>
+                        <a href="">Избранное</a>
+
                     </div>
                     <div class="card-body">
                         
@@ -31,6 +36,8 @@
                         <label for="type" class="form-label">
                             Тип аккаунта: <b>{{ user.type_text }}</b>
                         </label>
+
+                        <div id="box-lk"></div>
                         
                         <form method="post">        
                             <button type="submit" class="btn btn-primary w-100">Выйти</button>
