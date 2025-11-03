@@ -121,11 +121,10 @@ Registration and login
       "user_id": 30,
       "code": "2519"
     }'
-
 <figure>
    <p align="center">
-      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/registration_and_update_conformation_code.png">
-      <p align="center">Registration and update conformation code</p>
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/success_registration.png">
+      <p align="center">Success registration</p>
    </p>
 </figure>
 
@@ -136,6 +135,13 @@ Registration and login
       --data-raw '{
       "user_id": 30
     }'
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/registration_and_update_conformation_code.png">
+      <p align="center">Registration and update conformation code</p>
+   </p>
+</figure>
 
 ## login
     curl -X POST \
