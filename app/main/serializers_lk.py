@@ -42,12 +42,16 @@ class LkAllCommentsSerializer(serializers.ModelSerializer):
 class LkAllRecipesSerializer(serializers.ModelSerializer):
     text_time_cooking = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
+    name_chef = serializers.SerializerMethodField()
 
     def get_text_time_cooking(self, obj: Recipe) -> str:
         return obj.text_time_cooking()
 
     def get_category(self, obj: Recipe) -> str:
         return obj.get_title_category()
+
+    def get_name_chef(self, obj: Recipe) -> str:
+        return obj.user.get_name()
     class Meta:
         model = Recipe
         fields = [
@@ -56,6 +60,7 @@ class LkAllRecipesSerializer(serializers.ModelSerializer):
             'category',
             'user',
             'text_time_cooking',
+            'name_chef',
             'created',
             'updated'
         ]

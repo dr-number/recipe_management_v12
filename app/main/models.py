@@ -48,6 +48,9 @@ class User(AbstractUser):
     date_confirmed_email = models.DateTimeField(blank=True, null=True, verbose_name='Дата подтвердения email')
     confirmation_email = models.JSONField(verbose_name='код-подтвердение email', blank=True, default=dict)
 
+    def get_name(self) -> str:
+        return f'{self.last_name} {self.first_name}'
+
     def get_type_text(self) -> str:
         return (
             'Администратор' if self.is_superuser else
