@@ -42,7 +42,7 @@ http://localhost:8700/admin/login/?next=/admin/
 <figure>
    <p align="center">
       <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/django_debugger_visual_studio_code.png">
-      <p align="center">Django debugger in visual studio code</p>
+      <p align="center">Django debugger in Visual Studio Code in a Docker container</p>
    </p>
 </figure>
 
