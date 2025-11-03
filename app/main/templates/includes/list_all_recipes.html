@@ -1,4 +1,6 @@
-<a href="">Добавить рецепт</a>
+{% if user.is_chef %}
+    <a href="">Добавить рецепт</a>
+{% endif %}
 
 <div>
     {{ recipes|safe }}

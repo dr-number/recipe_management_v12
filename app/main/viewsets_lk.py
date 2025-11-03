@@ -63,6 +63,7 @@ class LkAllViewSet(ViewSet):
             })
             
         return render(request, 'includes/list_all_recipes.html', {
+            'user': request.user,
             'recipes': recipes
         })
 
@@ -89,7 +90,6 @@ class LkAllViewSet(ViewSet):
             })
 
         return Response(RecipeWithCommentsSerializer(recipe).data)
-
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
     @action(detail=False, methods=['post'])

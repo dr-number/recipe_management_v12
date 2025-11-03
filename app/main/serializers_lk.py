@@ -98,6 +98,18 @@ class LkRecipeAddCommentInputSerializer(serializers.Serializer):
         return attrs
 
 class LkRecipeSerializer(serializers.ModelSerializer):
+    text_time_cooking = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    name_chef = serializers.SerializerMethodField()
+
+    def get_text_time_cooking(self, obj: Recipe) -> str:
+        return obj.text_time_cooking()
+
+    def get_category(self, obj: Recipe) -> str:
+        return obj.get_title_category()
+
+    def get_name_chef(self, obj: Recipe) -> str:
+        return obj.user.get_name()
     class Meta:
         model = Recipe
         fields = [
@@ -106,8 +118,9 @@ class LkRecipeSerializer(serializers.ModelSerializer):
             'html_description',
             'ingredients',
             'steps',
-            'time_cooking',
-            'type',
+            'text_time_cooking',
+            'name_chef',
+            'category',
             'user',
             'created',
             'updated'
