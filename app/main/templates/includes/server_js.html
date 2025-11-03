@@ -75,7 +75,6 @@
         }
     }
     
-    // Функция для обработки входа
     async function handleLoginSubmit(event) {
         event.preventDefault();
         
@@ -89,12 +88,19 @@
         for (let [key, value] of formData.entries()) {
             jsonData[key] = value;
         }
-    
+
         submitBtn.textContent = 'Вход...';
         submitBtn.disabled = true;
-    
+
         try {
-            const response = await runInServerFetch('http://localhost:8700/main/allow_any/login/', jsonData);
+            const response = await fetch('http://localhost:8700/main/allow_any/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(jsonData)
+            });
             
             if (response.ok) {
                 const result = await response.json();
@@ -102,7 +108,7 @@
                 if (result.token) {
                     localStorage.setItem('auth_token', result.token);
                     alert('Успешный вход!');
-                    window.location.reload();
+                    window.location.href = '/'; // Перенаправление на главную
                 } else {
                     alert('Ошибка входа: токен не получен');
                 }
@@ -118,6 +124,13 @@
             submitBtn.disabled = false;
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('loginForm');
+        if (form) {
+            form.addEventListener('submit', handleLoginSubmit);
+        }
+    });
     
     // Показать модальное окно подтверждения
     function showConfirmationModal() {

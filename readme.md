@@ -160,6 +160,13 @@ Registration and login
       "password": "MyPassword0"
     }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/error_login.png">
+      <p align="center">Error login</p>
+   </p>
+</figure>
+
 
 For all users
 ## list all recipes
