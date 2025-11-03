@@ -35,6 +35,28 @@ http://localhost:8700/admin/login/?next=/admin/
    </p>
 </figure>
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/filter_raiting.png">
+      <p align="center">Filter raiting</p>
+   </p>
+</figure>
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/filter_type_and_time.png">
+      <p align="center">Filter type and time</p>
+   </p>
+</figure>
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/filter_types_and_raitings.png">
+      <p align="center">Filter type and raiting</p>
+   </p>
+</figure>
+
+
 
 # Pages
     http://localhost:8700/main/front/register/
