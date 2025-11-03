@@ -107,8 +107,7 @@
                 
                 if (result.token) {
                     localStorage.setItem('auth_token', result.token);
-                    alert('Успешный вход!');
-                    window.location.href = '/'; // Перенаправление на главную
+                    window.location.href = 'http://localhost:8700/main/lk_all/get_lk/'; // Перенаправление на главную
                 } else {
                     alert('Ошибка входа: токен не получен');
                 }
@@ -131,7 +130,7 @@
             form.addEventListener('submit', handleLoginSubmit);
         }
     });
-    
+
     // Показать модальное окно подтверждения
     function showConfirmationModal() {
         document.getElementById('confirmation_user_id').value = currentUserId;

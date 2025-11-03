@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 
 
 from main.const import (
-    KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF, RATING_RECIPE_CHOICES
+    KEY_USER_TYPES_CHOICES, KEY_USER_TYPE_CHEF, RATING_RECIPE_CHOICES, KEY_USER_TYPES_CHOICES_DICT
 )
 from app.settings import ERRORS_CHAT_ID
 
@@ -47,6 +47,12 @@ class User(AbstractUser):
     is_confirmed_email = models.BooleanField(default=False, verbose_name='Подтвердение email')
     date_confirmed_email = models.DateTimeField(blank=True, null=True, verbose_name='Дата подтвердения email')
     confirmation_email = models.JSONField(verbose_name='код-подтвердение email', blank=True, default=dict)
+
+    def get_type_text(self) -> str:
+        return (
+            'Администратор' if self.is_superuser else
+            KEY_USER_TYPES_CHOICES_DICT.get(self.type, 'Неизвестно')
+        )
 
     @property
     def token(self):

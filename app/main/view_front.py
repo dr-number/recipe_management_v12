@@ -1,5 +1,3 @@
-import requests
-
 from django.views import View
 from django.shortcuts import render
 
@@ -18,4 +16,3 @@ class LogininWebView(View):
     def get(self, request):
         form = LogininForm()
         return render(request, self.template_name, {'form': form})
-    

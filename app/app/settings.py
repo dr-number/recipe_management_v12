@@ -119,11 +119,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
-            ] #,
-            # 'libraries':{
-                # 'functions_mail':  'main.templatetags.functions_mail',
-                # 'functions_html':  'main.templatetags.functions_html',
-            # }
+            ],
+            'libraries':{
+                'functions_html':  'main.templatetags.functions_html'
+            }
         },
     },
 ]
