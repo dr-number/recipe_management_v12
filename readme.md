@@ -121,10 +121,18 @@ Registration and login
       "user_id": 30,
       "code": "2519"
     }'
+
 <figure>
    <p align="center">
       <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/success_registration.png">
       <p align="center">Success registration</p>
+   </p>
+</figure>
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/error_echeck_code_and_report_to_tg_bot.png">
+      <p align="center">Error echeck code and report to bot</p>
    </p>
 </figure>
 
