@@ -38,6 +38,14 @@ http://localhost:8700/admin/login/?next=/admin/
 # For editing files created using the django application
     sudo chown -R  $USER:$USER path_to_dir
 
+# Debuger
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/django_debugger_visual_studio_code.png">
+      <p align="center">Django debugger in visual studio code</p>
+   </p>
+</figure>
+
 <figure>
    <p align="center">
       <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/chef_and_admin.png">
