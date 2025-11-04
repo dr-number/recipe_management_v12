@@ -1,9 +1,36 @@
 from rest_framework import serializers
 from main.models import User, Recipe, Comment
 from main.const import (
-    RATING_RECIPE_CHOICES
+    RATING_RECIPE_CHOICES, KEY_USER_TYPES_CHOICES
 )
 from main.helpers_serializers import validate_unexpected_fields, is_valid_email, serializer_logger
+
+class EditAccountSerializer(serializers.Serializer):
+    first_name = serializers.CharField(
+        label='first_name', 
+        write_only=True, 
+        required=False,
+        allow_blank=True,
+        max_length=255
+    )
+    last_name = serializers.CharField(
+        label='last_name', 
+        write_only=True, 
+        required=False,
+        allow_blank=True,
+        max_length=255
+    )
+    type = serializers.ChoiceField(
+        label='type', 
+        write_only=True, 
+        required=False,
+        allow_blank=True,
+        choices=KEY_USER_TYPES_CHOICES
+    )
+
+    @validate_unexpected_fields()
+    def validate(self, attrs):
+        return super().validate(attrs)
 
 class LkAllUserOutputSerializer(serializers.ModelSerializer):
     type_text = serializers.SerializerMethodField()

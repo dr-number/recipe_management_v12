@@ -8,7 +8,8 @@ from django.template.loader import render_to_string
 
 from main.serializers_lk import (
     LkAllRecipesSerializer, RecipeWithCommentsSerializer, LkRecipeInputSerializer, 
-    LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer, LkAllUserOutputSerializer
+    LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer, LkAllUserOutputSerializer,
+    EditAccountSerializer
 )
 from main.models import Recipe, Comment, User
 from main.const import CodesErrors
@@ -22,6 +23,22 @@ class LkAllViewSet(ViewSet):
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
     renderer_classes = (renderers.JSONRenderer,)
     permission_classes =(permissions.IsAuthenticated,)
+
+    @swagger_auto_schema(request_body=EditAccountSerializer)
+    @action(detail=False, methods=['post'])
+    def edit_profile(self, request):
+        serializer = EditAccountSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user: User = request.user
+        user.first_name = serializer.validated_data.get('first_name', user.first_name)
+        user.last_name = serializer.validated_data.get('last_name', user.last_name)
+        user.type = serializer.validated_data.get('type', user.type)
+        user.save(update_fields=['first_name', 'last_name', 'type'])
+
+        return Response('ok')
 
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
