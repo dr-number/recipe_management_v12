@@ -98,6 +98,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify(jsonData)
             });
@@ -277,7 +278,7 @@
             const boxlk = document.getElementById('box-lk');
             const token = localStorage.getItem('auth_token');
             
-            const response = await fetch('http://localhost:8700/main/lk_all/get_lk_list_all_recipes/', {
+            const response = await fetch('http://localhost:8700/main/lk_all/list_all_recipes/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -293,6 +294,32 @@
                 
                 // Обновляем URL без перезагрузки
                 // window.history.pushState({}, '', '/lk/');
+            } else {
+                throw new Error('Ошибка загрузки ЛК');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
+    async function renderLkRecipePage() {
+        try {
+            const boxlk = document.getElementById('box-lk');
+            const token = localStorage.getItem('auth_token');
+
+            const recipeId = event.currentTarget.dataset.recipt_id
+            
+            const response = await fetch(`http://localhost:8700/main/lk_all/get_recipe/?id=${recipeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `token ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                boxlk.innerHTML = html;
             } else {
                 throw new Error('Ошибка загрузки ЛК');
             }

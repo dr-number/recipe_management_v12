@@ -23,15 +23,20 @@ class LkAllViewSet(ViewSet):
     renderer_classes = (renderers.JSONRenderer,)
     permission_classes =(permissions.IsAuthenticated,)
 
-    @swagger_auto_schema()
     @action(detail=False, methods=['get'])
     def list_all_recipes(self, request):
-        return Response(
-            LkAllRecipesSerializer(
-                Recipe.objects.all().order_by('-created'), 
-                many=True
-            ).data
-        )
+        list_all_recipes = LkAllRecipesSerializer(
+            Recipe.objects.all().order_by('-created'), 
+            many=True
+        ).data
+            
+        return render(request, 'includes/list_all_recipes.html', {
+            'user': request.user,
+            'recipes': ''.join(
+                render_to_string('includes/items/recipt.html', {'item': item})
+                for item in list_all_recipes
+            )
+        })
 
     @swagger_auto_schema()
     @action(detail=False, methods=['get'])
@@ -47,24 +52,6 @@ class LkAllViewSet(ViewSet):
         return render(request, 'lk.html', {
             'user': LkAllUserOutputSerializer(request.user).data,
             
-        })
-    
-    @action(detail=False, methods=['get'])
-    def get_lk_list_all_recipes(self, request):
-        list_all_recipes = LkAllRecipesSerializer(
-            Recipe.objects.all().order_by('-created'), 
-            many=True
-        ).data
-
-        recipes = ''
-        for item in list_all_recipes:
-            recipes += render_to_string('includes/items/recipt.html', {
-                    'item' : item
-            })
-            
-        return render(request, 'includes/list_all_recipes.html', {
-            'user': request.user,
-            'recipes': recipes
         })
 
     # @swagger_auto_schema(request_body=LkRecipeInputSerializer)
@@ -89,7 +76,13 @@ class LkAllViewSet(ViewSet):
                 )
             })
 
-        return Response(RecipeWithCommentsSerializer(recipe).data)
+        return render(request, 'get_recipe.html', {
+            'user': request.user,
+            'item': recipe,
+            'name_chef': recipe.user.get_name(),
+            'category': recipe.get_title_category(),
+            'rating': recipe.get_raiting()
+        })
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
     @action(detail=False, methods=['post'])
