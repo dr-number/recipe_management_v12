@@ -272,7 +272,7 @@ def save_comment(sender, instance: Comment, created, **kwargs):
             'comment': {
                 'text': instance.text,
                 'raiting': instance.raiting,
-                'author_comment': instance.user.get_name()
+                'author': instance.user.get_name()
             }
         }),
         send_to=[recipe.user.email]

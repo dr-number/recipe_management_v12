@@ -199,6 +199,13 @@ For all users
       "text": "Очень вкусно"
     }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/notification_comment.png">
+      <p align="center">Notification comment</p>
+   </p>
+</figure>
+
 ## get my comments
     curl -X GET \
     'http://localhost:8700/main/lk_all/get_list_my_comments/' \
