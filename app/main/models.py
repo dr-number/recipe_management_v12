@@ -224,6 +224,26 @@ class Recipe(BaseModel):
             return round(average_rating, 2)
         
         return 0
+
+@receiver(post_save, sender=Recipe)
+def save_recipe(sender, instance: Recipe, created, **kwargs):
+    from main.helpers import send_two_email_service
+    subject = (
+        'Добавление рецепта' if created else
+        'Редактирование рецепта'
+    )
+    category: RecipeCategory = instance.type
+    is_send_email, error_send, send_to_str = send_two_email_service(
+        subject_text=subject,
+        letter=render_to_string(f'email_notifications_recipe.html', context={
+            'recipe': instance,
+            'subject': subject,
+            'recipe_title': instance.title,
+            'recipe_raiting': instance.get_raiting(),
+            'category_title': category.title
+        }),
+        send_to=[instance.user.email]
+    )
     
 class Comment(BaseModel):
     text = models.TextField(null=False, blank=False, max_length=250, verbose_name='Комментарий')
