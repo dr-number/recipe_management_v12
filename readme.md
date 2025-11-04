@@ -91,6 +91,8 @@ http://localhost:8700/main/front/loginin/
 
 http://localhost:8700/main/front/add_recipe/
 
+http://localhost:8700/main/front/edit_account/
+
 
 # CURLs
 
