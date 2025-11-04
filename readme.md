@@ -262,3 +262,10 @@ For Chef
       "time_cooking": "00:30:00",
       "html_description": "<p><img src=\"data:image/jpeg;base64,/9j/4......KR3qwN5UXqf//Z\"></p>"
     }'
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/notification_edit_recipe.png">
+      <p align="center">Notification edit recipe</p>
+   </p>
+</figure>
