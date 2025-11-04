@@ -1,5 +1,6 @@
 from django import forms
 from main.const import KEY_USER_TYPES_CHOICES
+from main.models import Recipe
 
 class CreateAccountForm(forms.Form):
     email = forms.EmailField(
@@ -75,3 +76,24 @@ class LogininForm(forms.Form):
         })
     )
     
+class AddRecipeModelForm(forms.ModelForm):
+    id_category_recipe = forms.IntegerField(
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    class Meta:
+        model = Recipe
+        fields = [
+            'title', 
+            'html_description', 
+            'ingredients', 
+            'steps', 
+            'time_cooking'
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'html_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'ingredients': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
+            'steps': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
+            'time_cooking': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+        }

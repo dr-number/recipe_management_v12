@@ -12,4 +12,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('front/register/', view_front.CreateAccountWebView.as_view(), name='front_register'),
     path('front/loginin/', view_front.LogininWebView.as_view(), name='front_loginin'),
+    path('front/add_recipe/', view_front.AddRecipeModelWebView.as_view(), name='front_add_recipe'),
 ]
