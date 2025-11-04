@@ -1,6 +1,6 @@
 from django import forms
 from main.const import KEY_USER_TYPES_CHOICES
-from main.models import Recipe
+from main.models import Recipe, RecipeCategory
 
 class CreateAccountForm(forms.Form):
     email = forms.EmailField(
@@ -77,9 +77,12 @@ class LogininForm(forms.Form):
     )
     
 class AddRecipeModelForm(forms.ModelForm):
-    id_category_recipe = forms.IntegerField(
+    id_category_recipe = forms.ModelChoiceField(
+        queryset=RecipeCategory.objects.all(),
         required=True,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Категория рецепта',
+        empty_label="Выберите категорию"
     )
     class Meta:
         model = Recipe
@@ -97,3 +100,7 @@ class AddRecipeModelForm(forms.ModelForm):
             'steps': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
             'time_cooking': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
         }
+
+    def clean_id_category_recipe(self):
+        category = self.cleaned_data['id_category_recipe']
+        return category.id
