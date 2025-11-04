@@ -10,15 +10,18 @@
 
 <body style="text-align: center;">
     {{ subject }}
-
-    Рецепт: {{ recipe_title }}
-    Категория рецепта: {{ category_title }}
-    Рейтинг рецепта: {{ crecipe_raiting }}
     </br>
+    Рецепт: <b>{{ recipe_title }}</b>
     </br>
-    Комментарий: {{ comment.text }}
-    Поставленный рейтинг: {{ comment.raiting }}
-    Автор комментария: {{ comment.raiting }}
+    Категория рецепта: <b>{{ category_title }}</b>
+    </br>
+    Рейтинг рецепта: <b>{{ recipe_raiting }}</b>
+    </br>
+    Комментарий: <b>{{ comment.text }}</b>
+    </br>
+    Поставленный рейтинг: <b>{{ comment.raiting }}</b>
+    </br>
+    Автор комментария: <b>{{ author_comment }}</b>
     </br>
 </body>
 
