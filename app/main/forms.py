@@ -55,6 +55,32 @@ class CreateAccountForm(forms.Form):
         choices=KEY_USER_TYPES_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+
+class EditProfileForm(forms.Form):
+    first_name = forms.CharField(
+        label='Имя',
+        required=True,
+        max_length=255,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите ваше имя'
+        })
+    )
+    last_name = forms.CharField(
+        label='Фамилия',
+        required=True,
+        max_length=255,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите вашу фамилию'
+        })
+    )
+    type = forms.ChoiceField(
+        label='Тип аккаунта',
+        required=True,
+        choices=KEY_USER_TYPES_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
     
 
 class LogininForm(forms.Form):

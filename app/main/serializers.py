@@ -111,7 +111,7 @@ class LoginSerializer(serializers.Serializer):
         required=True,
     )
 
-    @validate_unexpected_fields()
+    # @validate_unexpected_fields()
     def validate(self, attrs):
         errors = {}
         request = self.context['request']

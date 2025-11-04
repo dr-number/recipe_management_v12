@@ -1,7 +1,10 @@
 from django.views import View
 from django.shortcuts import render
 
-from main.forms import CreateAccountForm, LogininForm, AddRecipeModelForm
+from main.models import User
+from main.forms import (
+    CreateAccountForm, LogininForm, AddRecipeModelForm, EditProfileForm
+)
 
 class CreateAccountWebView(View):
     template_name = 'create_account.html'
@@ -22,4 +25,16 @@ class AddRecipeModelWebView(View):
     
     def get(self, request):
         form = AddRecipeModelForm()
+        return render(request, self.template_name, {'form': form})
+
+class EditAccountWebView(View):
+    template_name = 'edit_account.html'
+    
+    def get(self, request):
+        user: User = request.user
+        form = EditProfileForm(initial={
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'type': user.email,
+        })
         return render(request, self.template_name, {'form': form})
