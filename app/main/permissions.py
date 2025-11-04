@@ -16,7 +16,7 @@ class IsChefUser(BasePermission):
 def get_or_create_admin_shef():
     permissions = Permission.objects.filter(
         codename__in=[
-            'view_recipecategory',
+            'view_recipecategory', 'add_recipecategory', 'change_recipecategory', 'delete_recipecategory',
             'view_comment', 'add_comment', 'change_comment', 'delete_comment',
             'view_recipe', 'add_recipe', 'change_recipe', 'delete_recipe',
         ]

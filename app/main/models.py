@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Avg
 from django.dispatch import receiver
+from django.template.loader import render_to_string
+
 
 from django.db.models.signals import post_save
 
@@ -249,5 +251,30 @@ class Comment(BaseModel):
     class Meta: 
         verbose_name = "Комментарий к рецепту"
         verbose_name_plural = "Комментарии к рецептам"
+
+@receiver(post_save, sender=Comment)
+def save_comment(sender, instance: Comment, created, **kwargs):
+    from main.helpers import send_two_email_service
+    subject = (
+        'Добавление комментария' if created else
+        'Редактирование комментария'
+    )
+    recipe = instance.recipe
+    category: RecipeCategory = recipe.type
+    is_send_email, error_send, send_to_str = send_two_email_service(
+        subject_text=subject,
+        letter=render_to_string(f'email_notifications_comment.html', context={
+            'comment': instance,
+            'subject': subject,
+            'recipe_title': recipe.title,
+            'recipe_raiting': recipe.get_raiting(),
+            'category_title': category.title,
+            'comment': {
+                'text': instance.text,
+                'raiting': instance.raiting
+            }
+        }),
+        send_to=[recipe.user.email]
+    )
 
     
