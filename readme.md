@@ -229,6 +229,15 @@ For all users
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
 
+## edit profile
+      curl -X POST \
+      'http://localhost:8700/main/lk_all/edit_profile/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: token MyToken' \
+      --data-raw '{
+      "first_name": "Сидоров"
+      }'
+
 For Chef
 ## list all recipe categories
     curl -X GET \
