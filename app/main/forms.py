@@ -1,4 +1,5 @@
 from django import forms
+from tinymce.widgets import TinyMCE
 from main.const import KEY_USER_TYPES_CHOICES
 from main.models import Recipe, RecipeCategory
 
@@ -95,7 +96,15 @@ class AddRecipeModelForm(forms.ModelForm):
         ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'html_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'html_description': TinyMCE(
+                attrs={'cols': 80, 'rows': 20},
+                mce_attrs={
+                    'plugins': 'link image preview code',
+                    'toolbar': 'undo redo | bold italic | alignleft aligncenter alignright | code',
+                    'menubar': True,
+                    'statusbar': False,
+                }
+            ),
             'ingredients': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
             'steps': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
             'time_cooking': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
