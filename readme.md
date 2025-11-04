@@ -250,6 +250,20 @@ For Chef
       "html_description": "<p><img src=\"data:image/jpeg;base64,/9j/4......KR3qwN5UXqf//Z\"></p>"
     }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/add_recipe.png">
+      <p align="center">Add recipe</p>
+   </p>
+</figure>
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/add_recipe_in_admin.png">
+      <p align="center">New recipe in admin</p>
+   </p>
+</figure>
+
 ## update recipe
     curl -X POST \
       'http://localhost:8700/main/lk_chef/update_recipe/' \

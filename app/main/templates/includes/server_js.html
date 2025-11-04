@@ -144,7 +144,10 @@
     }
     
     // Обработка отправки формы подтверждения
-    document.getElementById('confirmationForm').addEventListener('submit', async function(event) {
+    const confirmationForm = document.getElementById('confirmationForm');
+    if (confirmationForm){
+    confirmationForm.addEventListener('submit', async function(event) {
+    
         event.preventDefault();
         
         const confirmBtn = document.getElementById('confirmBtn');
@@ -185,8 +188,10 @@
         }
     });
     
+    
+    }
     // Обработка повторной отправки кода
-    document.getElementById('resendCodeBtn').addEventListener('click', async function() {
+    document.getElementById('resendCodeBtn')?.addEventListener('click', async function() {
         const resendBtn = this;
         const originalText = resendBtn.textContent;
         
@@ -303,53 +308,52 @@
 
 
     async function handleAddRecipeSubmit(event) {
-        event.preventDefault();
-        
-        const form = event.target;
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        
-        const formData = new FormData(form);
-        const jsonData = {};
-        
-        for (let [key, value] of formData.entries()) {
-            jsonData[key] = value;
-        }
+    event.preventDefault();
     
-        submitBtn.textContent = 'Добавление рецепта...';
-        submitBtn.disabled = true;
+    const form = event.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
     
-        try {
-            const token = localStorage.getItem('auth_token');
-            const response = await fetch('http://localhost:8700/main/lk_chef/add_recipe/', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `token ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                
-                if (result.recipe_id) {
-                    alert('Рецепт успешно добавлен!');
-                    window.location.reload();
-                }
-            } else {
-                const errorData = await response.json();
-                alert('Ошибка: ' + (errorData.detail || JSON.stringify(errorData)));
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-            alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
-        } finally {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        }
+    const formData = new FormData(form);
+    const jsonData = {};
+    
+    for (let [key, value] of formData.entries()) {
+        jsonData[key] = value;
     }
+    
+    submitBtn.textContent = 'Добавление рецепта...';
+    submitBtn.disabled = true;
 
+    try {
+        const token = localStorage.getItem('auth_token');
+        const response = await fetch('http://localhost:8700/main/lk_chef/add_recipe/', {
+            method: 'POST',
+            body: JSON.stringify(jsonData), // Преобразуем в JSON
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `token ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            
+            if (result.recipe_id) {
+                alert('Рецепт успешно добавлен!');
+                window.location.reload();
+            }
+        } else {
+            const errorData = await response.json();
+            alert('Ошибка: ' + (errorData.detail || JSON.stringify(errorData)));
+        }
+    } catch (error) {
+        console.error('Network error:', error);
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+}
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('addRecipeForm');
         if (form) {
