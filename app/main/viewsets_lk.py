@@ -70,17 +70,17 @@ class LkAllViewSet(ViewSet):
     
     @action(detail=False, methods=['get'])
     def get_lk_list_all_recipes(self, request):
-        list_all_recipes = LkAllRecipesSerializer(
-            Recipe.objects.all().order_by('-created'), 
-            many=True
-        ).data
+        list_all_recipes = Recipe.objects.all().order_by('-created')
 
         recipes = ''
         for item in list_all_recipes:
             recipes += render_to_string('includes/items/recipt.html', {
                 'item': item,
-                'created': datetime.fromisoformat(item['created']).strftime('%d.%m.%Y'),
-                'updated': datetime.fromisoformat(item['updated']).strftime('%d.%m.%Y')
+                'category': item.get_title_category(),
+                'raiting': item.get_raiting(),
+                'name_chef': item.user.get_name(),
+                'created': item.created.strftime('%d.%m.%Y'),
+                'updated': item.updated.strftime('%d.%m.%Y')
             })
             
         return render(request, 'includes/list_all_recipes.html', {
@@ -132,10 +132,14 @@ class LkAllViewSet(ViewSet):
                     'Данный рецепт не найден!'
                 )
             })
+
+        comments = recipe.get_comments()
+        comments_count = comments.count()
             
         return render(request, 'get_recipe.html', {
             'user': request.user,
             'item': recipe,
+            'rating': recipe.get_raiting(),
             'category': recipe.get_title_category(),
             'name_chef': recipe.user.get_name(),
             'created': recipe.created.strftime('%d.%m.%Y'),
