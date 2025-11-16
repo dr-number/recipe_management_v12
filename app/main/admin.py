@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from main.models import User, Recipe, RecipeCategory, Comment
+from main.models import User, Recipe, RecipeCategory, Comment, Feedback
 from main.filters import TimeCookingFilter, RatingFilter
 from main.permissions import ChefUserRestrictedAdmin
 @admin.register(User)
@@ -116,3 +116,13 @@ class CommentAdmin(ChefUserRestrictedAdmin, admin.ModelAdmin):
                 user__id=request.user.id
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'text',
+        'email',
+        'created',
+        'updated'
+    )
