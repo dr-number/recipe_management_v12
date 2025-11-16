@@ -112,6 +112,36 @@ class LkAllViewSet(ViewSet):
 
         return Response(RecipeWithCommentsSerializer(recipe).data)
 
+    @action(detail=False, methods=['get'])
+    def get_lk_get_recipe(self, request):
+        query_params = request.query_params.dict()
+        serializer = LkRecipeInputSerializer(data=query_params, context={'request': request})
+        
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        recipe: Recipe = get_recipe_params(data={
+            'id': serializer.validated_data['id']
+        })
+
+        if not recipe:
+            return log_error_response(request, {
+                'code': CodesErrors.NOT_FOUND,
+                'errorText': (
+                    'Данный рецепт не найден!'
+                )
+            })
+            
+        return render(request, 'get_recipe.html', {
+            'user': request.user,
+            'item': recipe,
+            'category': recipe.get_title_category(),
+            'name_chef': recipe.user.get_name(),
+            'created': recipe.created.strftime('%d.%m.%Y'),
+            'updated': recipe.updated.strftime('%d.%m.%Y')
+        })
+
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
     @action(detail=False, methods=['post'])
     def add_comment_to_recipe(self, request):
