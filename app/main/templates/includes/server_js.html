@@ -448,6 +448,40 @@
         }
     }
 
+    async function renderLkAddRecipeToFavorite(id) {
+        const jsonData = {
+            'id': id
+        };
+        try {
+            const boxlk = document.getElementById('box-lk');
+            const token = localStorage.getItem('auth_token');
+            
+            const response = await fetch(`http://localhost:8700/main/lk_all/add_recipe_to_favorite/`, {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `token ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                alert('Рецепт успешно добавлен в избранное!');
+                
+                // Заменяем содержимое страницы
+                // boxlk.innerHTML = html;
+                
+                // Обновляем URL без перезагрузки
+                // window.history.pushState({}, '', '/lk/');
+            } else {
+                throw new Error('Ошибка загрузки ЛК');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
     async function handleAddCommentSubmit(event) {
     event.preventDefault();
     

@@ -262,6 +262,13 @@ For all users
       "id": 4
     }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/add_to_favorite.png">
+      <p align="center">Add recipe to favorite</p>
+   </p>
+</figure>
+
 ## get list my favorites
     curl -X GET \
       'http://localhost:8700/main/lk_all/get_list_my_favorites/' \
