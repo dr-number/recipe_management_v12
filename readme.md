@@ -218,6 +218,8 @@ For all users
       <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/get_recipe.png">
       <p align="center">get recipe</p>
    </p>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/list_all_comments.png">
 </figure>
 
 ## add comment to recipe
