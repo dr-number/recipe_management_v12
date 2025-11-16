@@ -336,6 +336,35 @@
         }
     }
 
+    async function renderLkAllRecipesWithMyCommentsPage() {
+        try {
+            const boxlk = document.getElementById('box-lk');
+            const token = localStorage.getItem('auth_token');
+            
+            const response = await fetch('http://localhost:8700/main/lk_all/get_lk_list_all_recipes_with_my_comments/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `token ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                
+                // Заменяем содержимое страницы
+                boxlk.innerHTML = html;
+                
+                // Обновляем URL без перезагрузки
+                // window.history.pushState({}, '', '/lk/');
+            } else {
+                throw new Error('Ошибка загрузки ЛК');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
 
     async function handleAddRecipeSubmit(event) {
         event.preventDefault();

@@ -260,3 +260,26 @@ class LkAllViewSet(ViewSet):
             'user': request.user,
             'recipes': favorites
         })
+
+    @action(detail=False, methods=['get'])
+    def get_lk_list_all_recipes_with_my_comments(self, request):
+        user: User = request.user
+        unique_recipes_with_my_comments = Recipe.objects.filter(
+            comment__user=user
+        ).distinct()
+
+        favorites = ''
+        for item in unique_recipes_with_my_comments:
+            favorites += render_to_string('includes/items/recipt.html', {
+                'item': item,
+                'category': item.get_title_category(),
+                'raiting': item.get_raiting(),
+                'name_chef': item.user.get_name(),
+                'created': item.created.strftime('%d.%m.%Y'),
+                'updated': item.updated.strftime('%d.%m.%Y')
+            })
+            
+        return render(request, 'includes/list_all_recipes_with_my_comments.html', {
+            'user': request.user,
+            'recipes': favorites
+        })
