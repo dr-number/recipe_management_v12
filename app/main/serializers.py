@@ -131,3 +131,38 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(errors)
 
         return super().validate(attrs)
+
+class AddFeedbackSerializer(serializers.Serializer):
+    email = serializers.CharField(
+        label="email",
+        write_only=True,
+        required=True,
+        allow_blank=False,
+    )
+    text = serializers.CharField(
+        label="text",
+        trim_whitespace=False,
+        write_only=True,
+        required=True,
+    )
+
+    # @validate_unexpected_fields()
+    def validate(self, attrs):
+        errors = {}
+        request = self.context['request']
+        text = attrs.get('text')
+        email = attrs.get('email')
+        if not text:
+            errors['text'] = ['Введите текст']
+
+        if not email:
+            errors['email'] = ['Введите email']
+            
+        if not is_valid_email(email=email):
+            errors['email'] = 'Некорректный адрес электронной почты'
+
+        if errors:
+            serializer_logger(request=request, attrs=attrs, errors=errors)
+            raise serializers.ValidationError(errors)
+
+        return super().validate(attrs)

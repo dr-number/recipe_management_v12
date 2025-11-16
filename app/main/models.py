@@ -298,4 +298,20 @@ def save_comment(sender, instance: Comment, created, **kwargs):
         send_to=[recipe.user.email]
     )
 
+class Feedback(BaseModel):
+    text = models.TextField(
+        null=False, 
+        blank=False, 
+        max_length=250, 
+        verbose_name='Описание'
+    )
+    email = models.EmailField(
+        null=False, 
+        blank=False, 
+        max_length=250, 
+        verbose_name='Email'
+    )
     
+    class Meta: 
+        verbose_name = "Обращение в техподдержку"
+        verbose_name_plural = "Обращения в техподдержку"

@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 
 from main.serializers import (
     CreateAccountSerializer, CheckConfirmationCodeIdSerializer, LoginSerializer, 
-    UpdateConfirmationCodeIdSerializer
+    UpdateConfirmationCodeIdSerializer, AddFeedbackSerializer
 )
 from main.models import User
 from main.const import CodesErrors
@@ -132,6 +132,38 @@ class AllowAnyViewSet(ViewSet):
 
         email = serializer.validated_data.get('email', '').lower()
         password = serializer.validated_data['password']
+
+        user: User = get_user_params({
+            'is_active': True,
+            'is_confirmed_email': True,
+            'email': email,
+        })
+
+        if not user or not user.is_active:
+            return log_error_response(request, {
+                'errorText': 'Пользователь с такими данными не зарегистрирован. Проверьте логин.'
+            })
+
+        if user and user.is_active and user.check_password(password):
+            login(request, user)
+            return Response({
+                'token': user.token.key,
+            })
+
+        return log_error_response(request, {
+            'errorText': 'Введены неверные данные проверьте пароль'
+        })
+
+    @swagger_auto_schema(request_body=AddFeedbackSerializer)
+    @action(detail=False, methods=['post'])
+    def add_feedback(self, request):
+        serializer = AddFeedbackSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        email = serializer.validated_data.get('email', '').lower()
+        text = serializer.validated_data['text']
 
         user: User = get_user_params({
             'is_active': True,
