@@ -155,7 +155,11 @@ class LkAllViewSet(ViewSet):
             'updated': recipe.updated.strftime('%d.%m.%Y'),
             'comments_count': comments_count,
             'list_comments': list_comments,
-            'comment_form': CommentForm()
+            'comment_form': render_to_string('comment_form.html', {
+                'form': CommentForm(initial={
+                    'id_recipe': recipe.id
+                })
+            })
         })
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)

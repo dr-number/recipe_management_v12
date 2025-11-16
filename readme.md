@@ -240,6 +240,13 @@ For all users
    </p>
 </figure>
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/add_comment.png">
+      <p align="center">Add comment</p>
+   </p>
+</figure>
+
 ## get my comments
     curl -X GET \
     'http://localhost:8700/main/lk_all/get_list_my_comments/' \

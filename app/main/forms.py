@@ -141,6 +141,11 @@ class AddRecipeModelForm(forms.ModelForm):
         return category.id
 
 class CommentForm(forms.ModelForm):
+    id_recipe = forms.IntegerField(
+        widget=forms.HiddenInput(),
+        required=False,
+        label=''
+    )
     class Meta:
         model = Comment
         fields = ['text', 'raiting']

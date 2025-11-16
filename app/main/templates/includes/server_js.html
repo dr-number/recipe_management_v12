@@ -448,4 +448,66 @@
         }
     }
 
+    async function handleAddCommentSubmit(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('commentForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    // Собираем данные формы
+    const formData = new FormData(form);
+    const jsonData = {};
+    
+    for (let [key, value] of formData.entries()) {
+        jsonData[key] = value;
+    }
+    
+    submitBtn.textContent = 'Добавление комментария...';
+    submitBtn.disabled = true;
+
+    try {
+        const token = localStorage.getItem('auth_token');
+        const response = await fetch('http://localhost:8700/main/lk_all/add_comment_to_recipe/', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `token ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            
+            if (result.comment_id) {
+                alert('Комментарий успешно добавлен!');
+                window.location.reload();
+            } else {
+                alert('Комментарий добавлен, но ID не получен');
+            }
+        } else {
+            const errorData = await response.json();
+            
+            // Обработка ошибок валидации Django
+            if (errorData.errors) {
+                let errorMessages = [];
+                for (let field in errorData.errors) {
+                    if (field !== 'code') {
+                        errorMessages = errorMessages.concat(errorData.errors[field]);
+                    }
+                }
+                alert('Ошибки валидации: ' + errorMessages.join(', '));
+            } else {
+                alert('Ошибка: ' + (errorData.detail || JSON.stringify(errorData)));
+            }
+        }
+    } catch (error) {
+        console.error('Network error:', error);
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+}
     </script>

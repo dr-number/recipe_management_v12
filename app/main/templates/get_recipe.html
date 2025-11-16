@@ -22,7 +22,7 @@
     <br>
     <div>
         Комментарии: <b id="count-comments">{{comments_count}}</b>
-        {% include "comment_form.html" %}
+        {{comment_form | safe}}
         <div id="comments-box">{{list_comments | safe}}</div>
     </div>
 </div>
