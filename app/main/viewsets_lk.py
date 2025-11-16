@@ -5,6 +5,8 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from datetime import datetime
+
 
 from main.serializers_lk import (
     LkAllRecipesSerializer, RecipeWithCommentsSerializer, LkRecipeInputSerializer, 
@@ -76,7 +78,9 @@ class LkAllViewSet(ViewSet):
         recipes = ''
         for item in list_all_recipes:
             recipes += render_to_string('includes/items/recipt.html', {
-                    'item' : item
+                'item': item,
+                'created': datetime.fromisoformat(item['created']).strftime('%d.%m.%Y'),
+                'updated': datetime.fromisoformat(item['updated']).strftime('%d.%m.%Y')
             })
             
         return render(request, 'includes/list_all_recipes.html', {

@@ -200,6 +200,13 @@ For all users
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/list_all_recipes.png">
+      <p align="center">list all recipes</p>
+   </p>
+</figure>
+
 ## get recipe
     curl -X GET \
       'http://localhost:8700/main/lk_all/get_recipe/?id=4' \
