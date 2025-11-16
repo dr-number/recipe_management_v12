@@ -189,7 +189,7 @@ For all users
 
 <figure>
    <p align="center">
-      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/error_login.png">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/get_user_info.png">
       <p align="center">User info</p>
    </p>
 </figure>
