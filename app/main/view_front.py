@@ -1,5 +1,6 @@
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
 
 from main.models import User
 from main.forms import (
@@ -24,6 +25,10 @@ class AddRecipeModelWebView(View):
     template_name = 'add_recipe.html'
     
     def get(self, request):
+        user: User = request.user
+        if user.is_anonymous:
+            return redirect('/main/front/loginin/')
+            
         form = AddRecipeModelForm()
         return render(request, self.template_name, {'form': form})
 
@@ -32,6 +37,9 @@ class EditAccountWebView(View):
     
     def get(self, request):
         user: User = request.user
+        if user.is_anonymous:
+            return redirect('/main/front/loginin/')
+
         form = EditProfileForm(initial={
             'first_name': user.first_name,
             'last_name': user.last_name,
