@@ -213,6 +213,13 @@ For all users
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/get_recipe.png">
+      <p align="center">get recipe</p>
+   </p>
+</figure>
+
 ## add comment to recipe
     curl -X POST \
       'http://localhost:8700/main/lk_all/add_comment_to_recipe/' \
