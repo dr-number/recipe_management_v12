@@ -275,6 +275,13 @@ For all users
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/favorites.png">
+      <p align="center">list my favorites</p>
+   </p>
+</figure>
+
 ## edit profile
       curl -X POST \
       'http://localhost:8700/main/lk_all/edit_profile/' \

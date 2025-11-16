@@ -256,7 +256,7 @@ class LkAllViewSet(ViewSet):
                 'updated': item.updated.strftime('%d.%m.%Y')
             })
             
-        return render(request, 'includes/list_all_recipes.html', {
+        return render(request, 'includes/list_all_favorites.html', {
             'user': request.user,
             'recipes': favorites
         })
