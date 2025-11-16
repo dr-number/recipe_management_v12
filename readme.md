@@ -180,6 +180,24 @@ Registration and login
    </p>
 </figure>
 
+## Write to support
+    curl -X POST \
+         'http://localhost:8700/main/allow_any/add_feedback/' \
+         --header 'Content-Type: application/json' \
+         --data-raw '{
+            "email":"dr.number@yandex.ru",
+            "text":"Help me!!!"
+         }'
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/add_feedback_1.png">
+      <br>
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/add_feedback_2.png">
+      <p align="center">Write to support</p>
+   </p>
+</figure>
+ 
 
 For all users
 

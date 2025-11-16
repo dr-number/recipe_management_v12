@@ -602,4 +602,57 @@
         submitBtn.disabled = false;
     }
 }
+
+async function handleSendFeedbackSubmit(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        const formData = new FormData(form);
+        const jsonData = {};
+        
+        for (let [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+        
+        submitBtn.textContent = 'Обращение в техподдержку...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch('http://localhost:8700/main/allow_any/add_feedback/', {
+                method: 'POST',
+                body: JSON.stringify(jsonData), // Преобразуем в JSON
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                if (result == "ok") {
+                    alert('Запрос успешно отправлен!');
+                    window.location.reload();
+                }
+            } else {
+                const errorData = await response.json();
+                alert('Ошибка: ' + (errorData.detail || JSON.stringify(errorData)));
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('supportForm');
+        if (form) {
+            form.addEventListener('submit', handleSendFeedbackSubmit);
+        }
+    });
+
     </script>
