@@ -4,14 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
 
 
 from main.serializers import (
     CreateAccountSerializer, CheckConfirmationCodeIdSerializer, LoginSerializer, 
     UpdateConfirmationCodeIdSerializer, AddFeedbackSerializer
 )
-from main.models import User
+from main.models import User, Feedback
 from main.const import CodesErrors
 from main.helpers import send_email_code, get_user_params
 from app.helpers import log_error_response
@@ -162,26 +161,8 @@ class AllowAnyViewSet(ViewSet):
             return Response({'code': CodesErrors.UNKNOWN_VALIDATION_ERROR, **serializer.errors},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        email = serializer.validated_data.get('email', '').lower()
-        text = serializer.validated_data['text']
-
-        user: User = get_user_params({
-            'is_active': True,
-            'is_confirmed_email': True,
-            'email': email,
-        })
-
-        if not user or not user.is_active:
-            return log_error_response(request, {
-                'errorText': 'Пользователь с такими данными не зарегистрирован. Проверьте логин.'
-            })
-
-        if user and user.is_active and user.check_password(password):
-            login(request, user)
-            return Response({
-                'token': user.token.key,
-            })
-
-        return log_error_response(request, {
-            'errorText': 'Введены неверные данные проверьте пароль'
-        })
+        Feedback.objects.create(
+            email=serializer.validated_data.get('email', '').lower(),
+            text=serializer.validated_data['text']
+        )
+        return Response('ok')
