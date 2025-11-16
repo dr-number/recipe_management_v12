@@ -18,8 +18,10 @@
     <br>
     Дата обновления: <b>{{updated}}</b>
     <br>
+    <br>
+    <br>
     <div>
         Комментарии: <span id="count-comments">{{comments_count}}</span>
-        <div id="comments-box"></div>
+        <div id="comments-box">{{list_comments | safe}}</div>
     </div>
 </div>

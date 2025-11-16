@@ -133,8 +133,17 @@ class LkAllViewSet(ViewSet):
                 )
             })
 
-        comments = recipe.get_comments()
+        comments: Comment = recipe.get_comments()
         comments_count = comments.count()
+
+        list_comments = ''
+        for item in comments:
+            list_comments += render_to_string('includes/items/comment.html', {
+                'item': item,
+                'name_chef': item.user.get_name(),
+                'created': item.created.strftime('%d.%m.%Y'),
+                'updated': item.updated.strftime('%d.%m.%Y')
+            })
             
         return render(request, 'get_recipe.html', {
             'user': request.user,
@@ -144,7 +153,8 @@ class LkAllViewSet(ViewSet):
             'name_chef': recipe.user.get_name(),
             'created': recipe.created.strftime('%d.%m.%Y'),
             'updated': recipe.updated.strftime('%d.%m.%Y'),
-            'comments_count': comments_count
+            'comments_count': comments_count,
+            'list_comments': list_comments
         })
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
