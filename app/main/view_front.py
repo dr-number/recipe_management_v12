@@ -18,6 +18,10 @@ class LogininWebView(View):
     template_name = 'loginin_account.html'
     
     def get(self, request):
+        user: User = request.user
+        if not user.is_anonymous:
+            return redirect('/main/lk_all/get_lk/')
+
         form = LogininForm()
         return render(request, self.template_name, {'form': form})
 
