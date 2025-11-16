@@ -274,6 +274,13 @@ For Chef
       --header 'Content-Type: application/json' \
       --header 'Authorization: token MyToken'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/list_all_recipe_categories.png">
+      <p align="center">List all recipe categories</p>
+   </p>
+</figure>
+
 ## add recipe
     curl -X POST \
       'http://localhost:8700/main/lk_chef/add_recipe/' \
