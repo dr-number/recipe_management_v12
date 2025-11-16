@@ -15,8 +15,9 @@
                     <div class="card-header">
                         <h4 class="mb-0">Личный кабинет</h4>
 
+                        <a href="http://localhost:8700/main/front/loginin/">Домой</a>
                         <a href="http://localhost:8700/main/front/edit_account/">Редактировать профиль</a>
-                        <a onclick="renderLkAllRecipesPage()">Все рецепты</a>
+                        <div class="my-button" onclick="renderLkAllRecipesPage()">Все рецепты</div>
                         <a href="">Мои коментарии</a>
                         <a href="">Избранное</a>
 
@@ -49,4 +50,5 @@
             </div>
         </div>
     </div>
+    {% include "includes/server_js.html" %}
 </body>
