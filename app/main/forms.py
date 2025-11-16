@@ -1,7 +1,7 @@
 from django import forms
 from tinymce.widgets import TinyMCE
 from main.const import KEY_USER_TYPES_CHOICES
-from main.models import Recipe, RecipeCategory
+from main.models import Recipe, RecipeCategory, Comment
 
 class CreateAccountForm(forms.Form):
     email = forms.EmailField(
@@ -139,3 +139,22 @@ class AddRecipeModelForm(forms.ModelForm):
     def clean_id_category_recipe(self):
         category = self.cleaned_data['id_category_recipe']
         return category.id
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text', 'raiting']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Оставьте ваш комментарий...',
+                'rows': 4
+            }),
+            'raiting': forms.Select(attrs={
+                'class': 'form-select'
+            })
+        }
+        labels = {
+            'text': 'Комментарий',
+            'raiting': 'Оценка'
+        }

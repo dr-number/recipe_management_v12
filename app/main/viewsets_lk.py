@@ -5,7 +5,6 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from datetime import datetime
 
 
 from main.serializers_lk import (
@@ -13,6 +12,7 @@ from main.serializers_lk import (
     LkRecipeAddCommentInputSerializer, LkAllCommentsSerializer, LkAllUserOutputSerializer,
     EditAccountSerializer
 )
+from main.forms import CommentForm
 from main.models import Recipe, Comment, User
 from main.const import CodesErrors
 from main.helpers import get_recipe_params
@@ -154,7 +154,8 @@ class LkAllViewSet(ViewSet):
             'created': recipe.created.strftime('%d.%m.%Y'),
             'updated': recipe.updated.strftime('%d.%m.%Y'),
             'comments_count': comments_count,
-            'list_comments': list_comments
+            'list_comments': list_comments,
+            'comment_form': CommentForm()
         })
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
