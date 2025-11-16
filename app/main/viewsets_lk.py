@@ -239,3 +239,24 @@ class LkAllViewSet(ViewSet):
                 many=True
             ).data
         )
+
+    @action(detail=False, methods=['get'])
+    def get_lk_list_my_favorites(self, request):
+        user: User = request.user
+        list_all_favorites = user.favorites.order_by('-created')
+
+        favorites = ''
+        for item in list_all_favorites:
+            favorites += render_to_string('includes/items/recipt.html', {
+                'item': item,
+                'category': item.get_title_category(),
+                'raiting': item.get_raiting(),
+                'name_chef': item.user.get_name(),
+                'created': item.created.strftime('%d.%m.%Y'),
+                'updated': item.updated.strftime('%d.%m.%Y')
+            })
+            
+        return render(request, 'includes/list_all_recipes.html', {
+            'user': request.user,
+            'recipes': favorites
+        })
