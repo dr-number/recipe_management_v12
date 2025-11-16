@@ -247,6 +247,12 @@ For all users
       "first_name": "Сидоров"
       }'
 
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/edit_profile.png">
+   </p>
+</figure>
+
 For Chef
 ## list all recipe categories
     curl -X GET \

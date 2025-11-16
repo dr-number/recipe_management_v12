@@ -28,7 +28,7 @@ class AddRecipeModelWebView(View):
         user: User = request.user
         if user.is_anonymous:
             return redirect('/main/front/loginin/')
-            
+
         form = AddRecipeModelForm()
         return render(request, self.template_name, {'form': form})
 
@@ -43,6 +43,9 @@ class EditAccountWebView(View):
         form = EditProfileForm(initial={
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'type': user.email,
+            'type': user.type,
         })
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {
+            'form': form,
+            'email': user.email
+        })
