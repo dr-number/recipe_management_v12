@@ -8,11 +8,18 @@
    </p>
 </figure>
 
-# Initial setup
+# Initial setup in Docker
     docker-compose -f docker-compose.local.yml --env-file .env.local up --build
     docker exec -ti recipe_management_web python3 manage.py makemigrations
     docker exec -ti recipe_management_web python3 manage.py migrate
     docker exec -ti recipe_management_web python3 manage.py collectstatic
+
+# Initial setup in venv
+    python -m venv venv
+    venv\Scripts\activate
+    pip install -r requirements.txt
+    python manage.py migrate
+    python manage.py runserver 0.0.0.0:8700
 
 # Url Swagger
 http://localhost:8700/swagger_doc/
