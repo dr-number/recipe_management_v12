@@ -33,7 +33,7 @@ class AddFeedbackWebView(View):
         user: User = request.user
         form = SupportForm(initial={
             'email': (
-                user.email if user.is_anonymous else
+                user.email if not user.is_anonymous else
                 ''
             )
         })
