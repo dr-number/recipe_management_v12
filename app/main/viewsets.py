@@ -3,6 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
+from django.contrib.auth import login
+
 
 from main.serializers import (
     CreateAccountSerializer, CheckConfirmationCodeIdSerializer, LoginSerializer, 
@@ -142,6 +144,7 @@ class AllowAnyViewSet(ViewSet):
             })
 
         if user and user.is_active and user.check_password(password):
+            login(request, user)
             return Response({
                 'token': user.token.key,
             })
