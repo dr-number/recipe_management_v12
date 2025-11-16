@@ -102,6 +102,25 @@ class LogininForm(forms.Form):
             'placeholder': 'Введите пароль'
         })
     )
+
+class SupportForm(forms.Form):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        max_length=255,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введите ваш email'
+        })
+    )
+    text = forms.CharField(
+        required=True,
+        max_length=255,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Опишите проблему'
+        })
+    )
     
 class AddRecipeModelForm(forms.ModelForm):
     id_category_recipe = forms.ModelChoiceField(

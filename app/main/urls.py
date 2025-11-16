@@ -14,4 +14,5 @@ urlpatterns = [
     path('front/edit_account/', view_front.EditAccountWebView.as_view(), name='edit_account'),
     path('front/loginin/', view_front.LogininWebView.as_view(), name='front_loginin'),
     path('front/add_recipe/', view_front.AddRecipeModelWebView.as_view(), name='front_add_recipe'),
+    path('front/support/', view_front.AddFeedbackWebView.as_view(), name='front_support'),
 ]

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from main.models import User
 from main.forms import (
-    CreateAccountForm, LogininForm, AddRecipeModelForm, EditProfileForm
+    CreateAccountForm, LogininForm, AddRecipeModelForm, EditProfileForm, SupportForm
 )
 
 class CreateAccountWebView(View):
@@ -23,6 +23,20 @@ class LogininWebView(View):
             return redirect('/main/lk_all/get_lk/')
 
         form = LogininForm()
+        return render(request, self.template_name, {'form': form})
+
+
+class AddFeedbackWebView(View):
+    template_name = 'support.html'
+    
+    def get(self, request):
+        user: User = request.user
+        form = SupportForm(initial={
+            'email': (
+                user.email if user.is_anonymous else
+                ''
+            )
+        })
         return render(request, self.template_name, {'form': form})
 
 class AddRecipeModelWebView(View):
