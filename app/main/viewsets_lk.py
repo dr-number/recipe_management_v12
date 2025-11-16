@@ -143,7 +143,8 @@ class LkAllViewSet(ViewSet):
             'category': recipe.get_title_category(),
             'name_chef': recipe.user.get_name(),
             'created': recipe.created.strftime('%d.%m.%Y'),
-            'updated': recipe.updated.strftime('%d.%m.%Y')
+            'updated': recipe.updated.strftime('%d.%m.%Y'),
+            'comments_count': comments_count
         })
 
     @swagger_auto_schema(request_body=LkRecipeAddCommentInputSerializer)
