@@ -5,7 +5,7 @@ from rest_framework import status, permissions, parsers, renderers
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import render
 from django.template.loader import render_to_string
-
+from django.contrib.auth import logout
 
 from main.serializers_lk import (
     LkAllRecipesSerializer, RecipeWithCommentsSerializer, LkRecipeInputSerializer, 
@@ -283,3 +283,9 @@ class LkAllViewSet(ViewSet):
             'user': request.user,
             'recipes': favorites
         })
+
+    @swagger_auto_schema()
+    @action(detail=False, methods=['post'])
+    def logout(self, request):
+        logout(request)
+        return Response('ok')
