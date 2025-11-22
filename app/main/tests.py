@@ -173,6 +173,21 @@ class AddRecipeTestCase(TestCase):
         
         self.assertEqual(response.status_code, 400)
 
+    def test_add_recipe_with_extra_fields_fields(self):
+        """Тест добавления рецепта с лишними полями"""
+        self.client.credentials(HTTP_AUTHORIZATION=f'token {self.valid_chef_token.key}')
+        
+        invalid_data = self.valid_recipe_data.copy()
+        invalid_data['extra_field'] = 'some_value'
+        
+        response = self.client.post(
+            self.url,
+            data=invalid_data,
+            format='json'
+        )
+        
+        self.assertEqual(response.status_code, 400)
+
     def test_add_recipe_with_invalid_category(self):
         """Тест добавления рецепта с несуществующей категорией"""
         self.client.credentials(HTTP_AUTHORIZATION=f'token {self.valid_chef_token.key}')
