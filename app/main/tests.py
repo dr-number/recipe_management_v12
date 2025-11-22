@@ -130,7 +130,7 @@ class AddRecipeTestCase(TestCase):
             format='json'
         )
         
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_add_recipe_by_unconfirmed_chef(self):
         """Тест попытки добавления рецепта поваром с неподтвержденным email"""
@@ -142,7 +142,7 @@ class AddRecipeTestCase(TestCase):
             format='json'
         )
         
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_add_recipe_by_regular_user(self):
         """Тест попытки добавления рецепта обычным пользователем"""
