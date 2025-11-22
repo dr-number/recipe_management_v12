@@ -391,3 +391,6 @@ For Chef
 
 ## Run AddCommentTestCase test
    docker exec -ti recipe_management_web python3 manage.py test main.tests.AddCommentTestCase
+
+## Run SendEnailTestCase test
+   docker exec -ti recipe_management_web python3 manage.py test main.tests.SendEnailTestCase
