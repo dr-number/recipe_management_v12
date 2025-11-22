@@ -380,3 +380,14 @@ For Chef
       <p align="center">Notification edit recipe</p>
    </p>
 </figure>
+
+
+# Run tests
+## Run all test
+   docker exec -ti recipe_management_web python3 manage.py test
+
+## Run AddRecipeTestCase test
+   docker exec -ti recipe_management_web python3 manage.py test main.tests.AddRecipeTestCase
+
+## Run AddCommentTestCase test
+   docker exec -ti recipe_management_web python3 manage.py test main.tests.AddCommentTestCase
