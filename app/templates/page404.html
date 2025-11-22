@@ -10,6 +10,11 @@
     <a href="http://localhost:8700/main/front/loginin/">Домой</a>    
     <a href="http://localhost:8700/main/front/support/">Техподдержка</a>
 
-    {% include "includes/img_404.html" %}
+    
+
+    <img src="data:image/png;base64, {% include "includes/img_404.html" %}" 
+         alt="Page not found" 
+         width="400">
+
 </body>
 </html>
