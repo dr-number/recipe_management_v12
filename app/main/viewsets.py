@@ -174,16 +174,4 @@ class AllowAnyViewSet(ViewSet):
 
 
 def custom_page_404(request, exception):
-    print('404')
-    try:
-        return render(request, 'page404.html', status=404)
-    except Exception as e:
-        logger.error(f'Error 404: {e}\n\n{traceback.format_exc()}')
-
-    return JsonResponse({
-        'error': 'Not Found',
-        'detail': 'The requested resource was not found on this server.',
-        'status_code': 404,
-        'path': request.path
-    }, status=404)
-
+    return render(request, 'page404.html', status=404)
