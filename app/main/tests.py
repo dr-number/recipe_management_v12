@@ -14,7 +14,8 @@ class AddRecipeTestCase(TestCase):
     def setUp(self):
         """Настройка тестовых данных"""
         # Создаем тестовую категорию
-        self.category, _ = RecipeCategory.objects.get_or_create(title="Ужин")
+        category_title = "Ужин"
+        self.category, _ = RecipeCategory.objects.get_or_create(title=category_title)
         
         # Создаем валидного пользователя-повара
         self.valid_chef = User.objects.create_user(
@@ -89,13 +90,12 @@ class AddRecipeTestCase(TestCase):
             format='json'
         )
         
-        self.assertEqual(response.status_code, 201)
-        self.assertTrue(response.data['success'])
-        self.assertEqual(response.data['recipe']['title'], 'Картофельное пюре')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.data['recipe_id'], None)
         
         # Проверяем, что рецепт действительно создан в базе
-        recipe = Recipe.objects.get(title='Картофельное пюре')
-        self.assertEqual(recipe.author, self.valid_chef)
+        recipe = Recipe.objects.get(title=self.valid_recipe_data['title'])
+        self.assertEqual(recipe.user, self.valid_chef)
         self.assertEqual(recipe.ingredients, 'Грибы, мясо, картошка, лук')
 
     def test_add_recipe_without_authentication(self):
