@@ -8,6 +8,9 @@ from rest_framework.test import APIClient
 from rest_framework.authtoken.models import Token
 from main.models import User, RecipeCategory, Recipe, Comment
 
+from main.helpers import send_two_email_service
+from django.template.loader import render_to_string
+
 from main.const import KEY_USER_TYPE_CHEF, KEY_USER_TYPE_CULINARY_ENTHUSIAST
 from app.settings import HOST
 
@@ -554,4 +557,56 @@ class AddCommentTestCase(TestCase):
         User.objects.all().delete()
         RecipeCategory.objects.all().delete()
         Token.objects.all().delete()
-    
+
+
+class SendEnailTestCase(TestCase):
+    def setUp(self):
+        """Настройка тестовых данных"""
+        self.subject = "Добавили новый комментарий"
+        category_title = "Ужин"
+        self.category, _ = RecipeCategory.objects.get_or_create(title=category_title)
+        self.valid_chef = User.objects.create_user(
+            username='chef@example.com',
+            email='chef@example.com',
+            password='testpass123',
+            first_name='Иван',
+            last_name='Поваров',
+            is_active=True,
+            type=KEY_USER_TYPE_CHEF,
+            is_confirmed_email=True,
+            date_confirmed_email=timezone.now()
+        )
+        self.recipe = Recipe.objects.create(
+            title='Тестовый рецепт',
+            user=self.valid_chef,
+            ingredients='Тестовые ингредиенты',
+            steps='Тестовые шаги',
+            time_cooking='00:30:00',
+            type=self.category
+        )
+        self.comment = Comment.objects.create(
+            text="Новый коммент на 5",
+            raiting=5,
+            recipe=self.recipe,
+            user=self.valid_chef
+        )
+
+    def test_send_email(self):
+        """Тест отправки почты"""
+
+        is_send_email, error_send, send_to_str = send_two_email_service(
+        subject_text=self.subject,
+        letter=render_to_string(f'email_notifications_comment.html', context={
+                'comment': self.comment,
+                'subject': self.subject,
+                'recipe_title': self.recipe.title,
+                'recipe_raiting': self.recipe.get_raiting(),
+                'category_title': self.category.title,
+                'comment': {
+                    'text': self.comment.text,
+                    'raiting': self.comment.raiting,
+                    'author': self.comment.user.get_name()
+                }
+            }),
+            send_to=[self.recipe.user.email]
+        )
