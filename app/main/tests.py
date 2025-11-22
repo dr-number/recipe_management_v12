@@ -45,7 +45,7 @@ class AddRecipeTestCase(TestCase):
             username='unconfirmed@example.com',
             email='unconfirmed@example.com',
             password='testpass123',
-            is_active=True,
+            is_active=False,
             type=KEY_USER_TYPE_CHEF,
             is_confirmed_email=False,  # Email не подтвержден
             date_confirmed_email=None
