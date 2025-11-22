@@ -595,18 +595,21 @@ class SendEnailTestCase(TestCase):
         """Тест отправки почты"""
 
         is_send_email, error_send, send_to_str = send_two_email_service(
-        subject_text=self.subject,
-        letter=render_to_string(f'email_notifications_comment.html', context={
-                'comment': self.comment,
-                'subject': self.subject,
-                'recipe_title': self.recipe.title,
-                'recipe_raiting': self.recipe.get_raiting(),
-                'category_title': self.category.title,
-                'comment': {
-                    'text': self.comment.text,
-                    'raiting': self.comment.raiting,
-                    'author': self.comment.user.get_name()
-                }
-            }),
-            send_to=[self.recipe.user.email]
-        )
+            subject_text=self.subject,
+            letter=render_to_string(f'email_notifications_comment.html', context={
+                    'comment': self.comment,
+                    'subject': self.subject,
+                    'recipe_title': self.recipe.title,
+                    'recipe_raiting': self.recipe.get_raiting(),
+                    'category_title': self.category.title,
+                    'comment': {
+                        'text': self.comment.text,
+                        'raiting': self.comment.raiting,
+                        'author': self.comment.user.get_name()
+                    }
+                }),
+                send_to=[self.recipe.user.email]
+            )
+
+        self.assertEqual(is_send_email, True)
+        self.assertEqual(error_send, "")
