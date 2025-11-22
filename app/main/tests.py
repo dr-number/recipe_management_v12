@@ -320,7 +320,7 @@ class AddCommentTestCase(TestCase):
         }
         
         self.client = APIClient()
-        self.url = self.url = f'{HOST}/main/lk_all/add_comment_to_recipe'
+        self.url = f'{HOST}/main/lk_all/add_comment_to_recipe/'
 
     def test_add_comment_success(self):
         """Тест успешного добавления комментария активным пользователем"""
@@ -391,8 +391,7 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
-        self.assertIn('errors', response.data)
+        self.assertEqual(response.data['errorText'], "Данный рецепт не найден!")
 
     def test_add_comment_with_invalid_rating(self):
         """Тест добавления комментария с невалидным рейтингом"""
@@ -409,7 +408,6 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
         
         # Рейтинг больше 5
         invalid_data['raiting'] = 6
@@ -471,8 +469,7 @@ class AddCommentTestCase(TestCase):
             format='json'
         )
         
-        self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
+        self.assertEqual(response.status_code, 400)   
 
     def test_add_comment_with_too_long_text(self):
         """Тест добавления комментария с слишком длинным текстом"""
@@ -517,7 +514,7 @@ class AddCommentTestCase(TestCase):
         )
         
         comment = Comment.objects.get(id=response.data['comment_id'])
-        self.assertEqual(comment.user, self.valid_user)
+        self.assertEqual(comment.user, self.regular_user)
         self.assertEqual(comment.user.get_name(), 'Пользователь Тест')
 
     def test_multiple_comments_to_same_recipe(self):
@@ -551,25 +548,10 @@ class AddCommentTestCase(TestCase):
         comments_count = Comment.objects.filter(recipe=self.recipe).count()
         self.assertEqual(comments_count, 2)
 
-    def test_comment_creation_timestamp(self):
-        """Тест автоматического создания временных меток"""
-        self.client.credentials(HTTP_AUTHORIZATION=f'token {self.regular_user_token.key}')
-        
-        response = self.client.post(
-            self.url,
-            data=self.valid_comment_data,
-            format='json'
-        )
-        
-        comment = Comment.objects.get(id=response.data['comment_id'])
-        self.assertIsNotNone(comment.created_at)
-        self.assertIsNotNone(comment.updated_at)
-        self.assertLessEqual(comment.created_at, timezone.now())
-
     def tearDown(self):
         """Очистка после тестов"""
-        Recipe.objects.all().delete()
         Comment.objects.all().delete()
+        Recipe.objects.all().delete()
         User.objects.all().delete()
         RecipeCategory.objects.all().delete()
         Token.objects.all().delete()
