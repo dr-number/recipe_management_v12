@@ -27,13 +27,15 @@ urlpatterns = [
 ]
 
 
-if True or IS_TEST_SERVER:
-    urlpatterns.append(
-        path(
-            'swagger_doc/', 
-            schema_view.with_ui('swagger', cache_timeout=0), 
-            name='swagger_doc'
-        )
+
+urlpatterns.append(
+    path(
+        'swagger_doc/', 
+        schema_view.with_ui('swagger', cache_timeout=0), 
+        name='swagger_doc'
     )
+)
+
+handler404 = 'main.viewsets.custom_page_404'
 
 # urlpatterns += static(STATIC_URL, document_root=STATIC_ROOT)

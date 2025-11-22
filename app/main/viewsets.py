@@ -1,3 +1,4 @@
+import traceback
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,6 +15,10 @@ from main.models import User, Feedback
 from main.const import CodesErrors
 from main.helpers import send_email_code, get_user_params
 from app.helpers import log_error_response
+
+from django.http import JsonResponse
+from django.shortcuts import render
+from app.help_logger import logger
 
 class AllowAnyViewSet(ViewSet):
     throttle_classes = ()
@@ -166,3 +171,19 @@ class AllowAnyViewSet(ViewSet):
             text=serializer.validated_data['text']
         )
         return Response('ok')
+
+
+def custom_page_404(request, exception):
+    print('404')
+    # try:
+    #     return render(request, 'app/templates/page404.html', status=404)
+    # except Exception as e:
+    #     logger.error(f'Error 404: {e}\n\n{traceback.format_exc()}')
+
+    return JsonResponse({
+        'error': 'Not Found',
+        'detail': 'The requested resource was not found on this server.',
+        'status_code': 404,
+        'path': request.path
+    }, status=404)
+
