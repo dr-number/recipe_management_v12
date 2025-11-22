@@ -1,5 +1,6 @@
 {% load functions_html %}
 
+{% load functions_html %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,9 +16,9 @@
                     <div class="card-header">
                         <h4 class="mb-0">Личный кабинет</h4>
 
-                        <a href="http://localhost:8700/main/front/loginin/">Домой</a>
-                        <a href="http://localhost:8700/main/front/edit_account/">Редактировать профиль</a>
-                        <a href="http://localhost:8700/main/front/support/">Техподдержка</a>
+                        <a href="{{'HOST'|get_const}}/main/front/loginin/">Домой</a>
+                        <a href="{{'HOST'|get_const}}/main/front/edit_account/">Редактировать профиль</a>
+                        <a href="{{'HOST'|get_const}}/main/front/support/">Техподдержка</a>
                         <div class="my-button" onclick="renderLkAllRecipesPage()">Все рецепты</div>
                         <div class="my-button" onclick="renderLkAllRecipesWithMyCommentsPage()">Рецепты с моими комментариями</div>
                         <div class="my-button" onclick="renderLkAllFavoritesPage()">Избранное</div>

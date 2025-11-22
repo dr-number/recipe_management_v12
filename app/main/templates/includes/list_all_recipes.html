@@ -1,5 +1,6 @@
+{% load functions_html %}
 {% if user.is_chef %}
-    <a href="http://localhost:8700/main/front/add_recipe/">Добавить рецепт</a>
+    <a href="{{'HOST'|get_const}}/main/front/add_recipe/">Добавить рецепт</a>
 {% endif %}
 
 <div>
