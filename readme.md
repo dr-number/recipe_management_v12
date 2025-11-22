@@ -394,3 +394,10 @@ For Chef
 
 ## Run SendEnailTestCase test
     docker exec -ti recipe_management_web python3 manage.py test main.tests.SendEnailTestCase
+
+<figure>
+   <p align="center">
+      <img src="https://github.com/dr-number/recipe_management_v12/blob/master/for_readme/img/tests.png">
+      <p align="center">Tests</p>
+   </p>
+</figure>
