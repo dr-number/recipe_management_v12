@@ -14,7 +14,7 @@ class AddRecipeTestCase(TestCase):
     def setUp(self):
         """Настройка тестовых данных"""
         # Создаем тестовую категорию
-        self.category = RecipeCategory.objects.create_get_or_create(name="Ужин")
+        self.category, _ = RecipeCategory.objects.get_or_create(title="Ужин")
         
         # Создаем валидного пользователя-повара
         self.valid_chef = User.objects.create_user(
@@ -77,7 +77,7 @@ class AddRecipeTestCase(TestCase):
         }
         
         self.client = APIClient()
-        self.url = reverse('add_recipe')  # Убедитесь, что у вас есть name для URL
+        self.url = 'http://localhost:8700/main/lk_chef/add_recipe/'
 
     def test_add_recipe_success(self):
         """Тест успешного добавления рецепта валидным поваром"""
@@ -239,7 +239,7 @@ class AddRecipeTestCase(TestCase):
 
     def tearDown(self):
         """Очистка после тестов"""
+        Recipe.objects.all().delete()
         User.objects.all().delete()
         RecipeCategory.objects.all().delete()
-        Recipe.objects.all().delete()
         Token.objects.all().delete()

@@ -142,6 +142,9 @@ DATABASES = {
         "PASSWORD": os.environ["SQL_PASSWORD"],
         "HOST": os.environ["SQL_HOST"],
         "PORT": os.environ["SQL_PORT"],
+        'TEST': {
+            'NAME': 'test_database',  # Явное указание имени тестовой БД
+        }
     },
 }
 
