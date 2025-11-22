@@ -291,6 +291,8 @@ class AddCommentTestCase(TestCase):
             username='regular@example.com',
             email='regular@example.com',
             password='testpass123',
+            first_name='Василий',
+            last_name='Васильев',
             is_active=True,
             type=KEY_USER_TYPE_CULINARY_ENTHUSIAST,  # Не повар
             is_confirmed_email=True,
@@ -512,7 +514,7 @@ class AddCommentTestCase(TestCase):
         
         comment = Comment.objects.get(id=response.data['comment_id'])
         self.assertEqual(comment.user, self.regular_user)
-        self.assertEqual(comment.user.get_name(), 'Пользователь Тест')
+        self.assertEqual(comment.user.get_name(), 'Васильев Василий')
 
     def test_multiple_comments_to_same_recipe(self):
         """Тест добавления нескольких комментариев к одному рецепту"""
