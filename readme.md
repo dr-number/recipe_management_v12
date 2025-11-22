@@ -384,7 +384,7 @@ For Chef
 
 # Run tests
 ## Run all test
-   docker exec -ti recipe_management_web python3 manage.py test
+    docker exec -ti recipe_management_web python3 manage.py test
 
 ## Run AddRecipeTestCase test
    docker exec -ti recipe_management_web python3 manage.py test main.tests.AddRecipeTestCase
