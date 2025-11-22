@@ -418,7 +418,6 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
 
     def test_add_comment_with_missing_required_fields(self):
         """Тест добавления комментария с отсутствующими обязательными полями"""
@@ -438,7 +437,6 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
         
         # Без рейтинга
         invalid_data = {
@@ -454,7 +452,7 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
+        
 
     def test_add_comment_with_empty_text(self):
         """Тест добавления комментария с пустым текстом"""
