@@ -3,25 +3,36 @@
 <head>
     <title>Страница не найдена</title>
 </head>
+
+<style>
+    .img_not_found{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 800px;
+    }
+    
+    .container {
+        text-align: center;
+    }
+</style>
+
 <body>
-    <h1>404 - Страница не найдена</h1>
-    <div>
-        <p>Извините, запрашиваемая страница не существует.</p>
+    <h1 style="text-align: center;">Извините, запрашиваемая страница не существует :(</h1>
+    <div class="container">
         </br>
         <a href="http://localhost:8700/main/front/loginin/">Домой</a>    
         <a href="http://localhost:8700/main/front/support/">Техподдержка</a>
         </br>
 
         {% if img %}
-        <img src="data:image/png;base64, {{ img }}" 
-             alt="Page not found" 
-             width="800"/>
+        <img class="img_not_found" src="data:image/png;base64, {{ img }}" 
+             alt="Page not found" />
         {% endif %}
 
         {% if not_decrypt %}
-        <img src="data:image/png;base64, {{ not_decrypt }}" 
-             alt="Page not found" 
-             width="800"/>
+        <img class="img_not_found" src="data:image/png;base64, {{ not_decrypt }}" 
+             alt="Page not found" />
         {% endif %}
     </div>
 
