@@ -338,7 +338,7 @@ class AddCommentTestCase(TestCase):
         
         # Проверяем, что комментарий действительно создан в базе
         comment = Comment.objects.get(id=response.data['comment_id'])
-        self.assertEqual(comment.user, self.regular_user_token)
+        self.assertEqual(comment.user, self.regular_user)
         self.assertEqual(comment.recipe, self.recipe)
         self.assertEqual(comment.text, 'Очень вкусно')
         self.assertEqual(comment.raiting, 5)
@@ -375,7 +375,7 @@ class AddCommentTestCase(TestCase):
             format='json'
         )
         
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_add_comment_to_nonexistent_recipe(self):
         """Тест добавления комментария к несуществующему рецепту"""
@@ -452,7 +452,7 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        
+
 
     def test_add_comment_with_empty_text(self):
         """Тест добавления комментария с пустым текстом"""
