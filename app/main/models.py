@@ -159,7 +159,7 @@ def save_user(sender, instance: User, created, **kwargs):
         instance.groups.remove(get_or_create_admin_shef())
 
 class RecipeCategory(BaseModel):
-    title = models.CharField(null=False, blank=False, max_length=70, verbose_name='Название')
+    title = models.CharField(unique=True, null=False, blank=False, max_length=70, verbose_name='Название категории')
 
     def __str__(self) -> str:
         return self.title
