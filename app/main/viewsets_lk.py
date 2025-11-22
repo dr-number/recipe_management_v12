@@ -286,6 +286,6 @@ class LkAllViewSet(ViewSet):
 
     @swagger_auto_schema()
     @action(detail=False, methods=['post'])
-    def logout(self, request):
+    def lk_logout(self, request):
         logout(request)
         return Response('ok')
