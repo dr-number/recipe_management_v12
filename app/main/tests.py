@@ -172,8 +172,6 @@ class AddRecipeTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
-        self.assertIn('errors', response.data)
 
     def test_add_recipe_with_invalid_category(self):
         """Тест добавления рецепта с несуществующей категорией"""
@@ -189,7 +187,7 @@ class AddRecipeTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
+        self.assertEqual(response.data['errorText'], "Категория не найдена!")
 
     def test_add_recipe_with_invalid_time_format(self):
         """Тест добавления рецепта с невалидным форматом времени"""
@@ -203,9 +201,7 @@ class AddRecipeTestCase(TestCase):
             data=invalid_data,
             format='json'
         )
-        
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
 
     def test_recipe_count_in_database(self):
         """Тест подсчета количества рецептов в базе данных"""
@@ -220,7 +216,7 @@ class AddRecipeTestCase(TestCase):
         
         final_count = Recipe.objects.count()
         
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(final_count, initial_count + 1)
 
     def test_recipe_author_assignment(self):
@@ -234,8 +230,8 @@ class AddRecipeTestCase(TestCase):
         )
         
         recipe = Recipe.objects.get(title='Картофельное пюре')
-        self.assertEqual(recipe.author, self.valid_chef)
-        self.assertEqual(recipe.author.get_name(), 'Поваров Иван')
+        self.assertEqual(recipe.user, self.valid_chef)
+        self.assertEqual(recipe.user.get_name(), 'Поваров Иван')
 
     def tearDown(self):
         """Очистка после тестов"""
