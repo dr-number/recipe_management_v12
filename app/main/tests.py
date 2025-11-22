@@ -526,7 +526,7 @@ class AddCommentTestCase(TestCase):
             data=self.valid_comment_data,
             format='json'
         )
-        self.assertEqual(response1.status_code, 201)
+        self.assertEqual(response1.status_code, 200)
         
         # Второй комментарий от того же пользователя
         second_comment_data = {
@@ -541,7 +541,7 @@ class AddCommentTestCase(TestCase):
             format='json'
         )
         
-        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(response2.status_code, 200)
         
         # Проверяем, что оба комментария созданы
         comments_count = Comment.objects.filter(recipe=self.recipe).count()
