@@ -387,10 +387,10 @@ For Chef
     docker exec -ti recipe_management_web python3 manage.py test
 
 ## Run AddRecipeTestCase test
-   docker exec -ti recipe_management_web python3 manage.py test main.tests.AddRecipeTestCase
+    docker exec -ti recipe_management_web python3 manage.py test main.tests.AddRecipeTestCase
 
 ## Run AddCommentTestCase test
-   docker exec -ti recipe_management_web python3 manage.py test main.tests.AddCommentTestCase
+    docker exec -ti recipe_management_web python3 manage.py test main.tests.AddCommentTestCase
 
 ## Run SendEnailTestCase test
-   docker exec -ti recipe_management_web python3 manage.py test main.tests.SendEnailTestCase
+    docker exec -ti recipe_management_web python3 manage.py test main.tests.SendEnailTestCase
