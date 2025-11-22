@@ -1,4 +1,5 @@
 import traceback
+import base64, binascii
 from typing import Tuple, Union
 
 from django.core.mail import EmailMultiAlternatives
@@ -20,6 +21,15 @@ def get_recipe_params(data: dict) -> Union[Recipe, None]:
 
 def get_recipe_category_params(data: dict) -> Union[RecipeCategory, None]:
     return RecipeCategory.objects.filter(**data).first()
+
+def is_base64(text):
+    try:
+        if isinstance(text, str):
+            text = text.encode('utf-8')
+        base64.b64decode(text, validate=True)
+        return True
+    except (binascii.Error, ValueError, Exception):
+        return False
 
 def save_file(text: str, save_file: str) -> bool:
     try:

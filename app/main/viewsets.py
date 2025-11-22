@@ -13,12 +13,15 @@ from main.serializers import (
 )
 from main.models import User, Feedback
 from main.const import CodesErrors
-from main.helpers import send_email_code, get_user_params
+from main.helpers import send_email_code, get_user_params, is_base64
 from app.helpers import log_error_response
 
-from django.http import JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
+
+from main.aes import aes_decrypt
 from app.help_logger import logger
+from app.settings import IMG_PASSWORD
 
 class AllowAnyViewSet(ViewSet):
     throttle_classes = ()
@@ -174,4 +177,15 @@ class AllowAnyViewSet(ViewSet):
 
 
 def custom_page_404(request, exception):
-    return render(request, 'page404.html', status=404)
+    try:
+        img = aes_decrypt(render_to_string('includes/img_404.html'), password=IMG_PASSWORD)
+        if not is_base64(text=img):
+            img = ''
+    except Exception as e:
+        logger.error(f'Error: {e}\n\n{traceback.format_exc()}')
+        img = ''
+
+    return render(request, 'page404.html', context={
+            'img': img,
+            # 'img2': render_to_string('includes/img_404.html')
+        }, status=404)

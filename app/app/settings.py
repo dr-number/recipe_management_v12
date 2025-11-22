@@ -19,6 +19,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["SECRET_KEY"]
+IMG_PASSWORD = os.getenv("IMG_PASSWORD", 'my_super_secret_password')
 DEBUG = int(os.getenv("DEBUG", 0))
 
 IS_SEND_TO_DEBUG_EMAILS = int(os.getenv("IS_SEND_TO_DEBUG_EMAILS", "0"))

@@ -11,9 +11,18 @@
         <a href="http://localhost:8700/main/front/loginin/">Домой</a>    
         <a href="http://localhost:8700/main/front/support/">Техподдержка</a>
         </br>
-        <img src="data:image/png;base64, {% include "includes/img_404.html" %}" 
+
+        {% if img %}
+        <img src="data:image/png;base64, {{ img }}" 
              alt="Page not found" 
-             width="800">
+             width="800"/>
+        {% endif %}
+
+        {% if img2 %}
+        <img src="data:image/png;base64, {{ img2 }}" 
+             alt="Page not found" 
+             width="800"/>
+        {% endif %}
     </div>
 
 </body>
