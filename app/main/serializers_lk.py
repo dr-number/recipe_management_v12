@@ -118,7 +118,7 @@ class LkRecipeAddCommentInputSerializer(serializers.Serializer):
         write_only=True, 
         required=True,
         allow_blank=False,
-        max_length=6000
+        max_length=250
     )
     @validate_unexpected_fields()
     def validate(self, attrs):

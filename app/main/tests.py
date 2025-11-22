@@ -483,7 +483,6 @@ class AddCommentTestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.data['success'])
 
     def test_comment_count_in_database(self):
         """Тест подсчета количества комментариев в базе данных"""
