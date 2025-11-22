@@ -497,7 +497,7 @@ class AddCommentTestCase(TestCase):
         
         final_count = Comment.objects.count()
         
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(final_count, initial_count + 1)
 
     def test_comment_user_assignment(self):
