@@ -659,23 +659,22 @@ async function handleSendFeedbackSubmit(event) {
     });
 
     async function logout(event){
-        event.preventDefault();
+        // event.preventDefault();
 
         try {
             const response = await fetch(`${HOST}/main/lk_all/lk_logout/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
                 }
             });
 
             if (response.ok) {
                 const result = await response.json();
-                
-                if (result == "ok") {
-                    localStorage.removeItem('auth_token');
-                    window.location.reload();
-                }
+                window.location.href = `${HOST}/main/front/loginin/`;
+                localStorage.removeItem('auth_token');
             } else {
                 const errorData = await response.json();
                 alert('Ошибка: ' + (errorData.detail || JSON.stringify(errorData)));
