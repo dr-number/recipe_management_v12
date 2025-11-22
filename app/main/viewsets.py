@@ -177,6 +177,7 @@ class AllowAnyViewSet(ViewSet):
 
 
 def custom_page_404(request, exception):
+    img = ''
     not_decrypt = render_to_string('includes/img_404.html')
     try:
         img = aes_decrypt(not_decrypt, password=IMG_PASSWORD)
