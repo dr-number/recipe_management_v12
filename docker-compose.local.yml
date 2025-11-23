@@ -35,8 +35,6 @@ services:
     image: postgres:14.2-alpine
     volumes:
       - ../recipe_management-db/db/:/var/lib/postgresql/data/
-      #- ../recipe_management-db-lite/db/:/var/lib/postgresql/data/ #без структуры документов
-      #- ../recipe_management-db-empty/db/:/var/lib/postgresql/data/ #для теста бэкапа БД
     env_file:
       - ./.env.local.db
     ports:
