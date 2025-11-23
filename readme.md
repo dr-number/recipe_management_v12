@@ -9,7 +9,7 @@
 </figure>
 
 # Creating .env files
-    Create .env.local, .env.local.db files with correct permissions in the root of the project based on .env.local.template, .env.local.db.template
+Create .env.local, .env.local.db files with correct permissions in the root of the project based on .env.local.template, .env.local.db.template
 
 # Initial setup in Docker
     docker-compose -f docker-compose.local.yml --env-file .env.local up --build
