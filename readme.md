@@ -18,6 +18,7 @@ Create .env.local, .env.local.db files with correct permissions in the root of t
     docker exec -ti recipe_management_web python3 manage.py collectstatic
 
 # Initial setup in venv
+    cd /d D:\...\dir_project
     python -m venv venv
     venv\Scripts\activate
     pip install -r requirements.txt
