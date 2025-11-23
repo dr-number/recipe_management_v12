@@ -628,7 +628,8 @@ async function handleSendFeedbackSubmit(event) {
                 method: 'POST',
                 body: JSON.stringify(jsonData), // Преобразуем в JSON
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
                 }
             });
 
