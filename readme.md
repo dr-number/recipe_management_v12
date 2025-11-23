@@ -24,12 +24,15 @@ Create .env.local, .env.local.db files with correct permissions in the root of t
     python .\app\manage.py migrate --settings=app.settings
     python .\app\manage.py runserver 0.0.0.0:8700
 
-# Initial setup in venv (ERROR)
+# Deactivate venv
+    deactivate
+
+<!-- # Initial setup in venv (ERROR)
     python -m venv venv
     venv\Scripts\activate
     pip install -r requirements.txt
     python manage.py migrate
-    python manage.py runserver 0.0.0.0:8700
+    python manage.py runserver 0.0.0.0:8700 -->
 
 # Url Swagger
 http://localhost:8700/swagger_doc/
