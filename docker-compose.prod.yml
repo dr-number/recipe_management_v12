@@ -90,19 +90,6 @@ services:
     restart: on-failure
     env_file:
       - .env.prod
-    
-    
-  feedback_bot:
-    container_name: recipe_management_feedback_bot
-    build:
-      context: ./app
-      dockerfile: Dockerfile.no_chrome.prod
-    restart: always
-    volumes:
-      - ./app:/home/app/web
-    env_file:
-      - ./.env.prod
-    command: python3 -u main/feedback_bot.py
   
   
 volumes:
