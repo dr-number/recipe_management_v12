@@ -10,8 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+
 import os
 from pathlib import Path
+
+IS_WNDOWS = os.name == 'nt'
+if IS_WNDOWS:
+    from dotenv import load_dotenv
+    load_dotenv('.env.local')
+    load_dotenv('.env.local.db')
 
 
 
@@ -134,19 +141,33 @@ ASGI_APPLICATION = 'app.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": os.environ["SQL_ENGINE"],
-        "NAME": os.environ["SQL_DATABASE"],
-        "USER": os.environ["SQL_USER"],
-        "PASSWORD": os.environ["SQL_PASSWORD"],
-        "HOST": os.environ["SQL_HOST"],
-        "PORT": os.environ["SQL_PORT"],
-        'TEST': {
-            'NAME': 'test_database',  # Явное указание имени тестовой БД
-        }
-    },
-}
+if not IS_WNDOWS:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ["SQL_ENGINE"],
+            "NAME": os.environ["SQL_DATABASE"],
+            "USER": os.environ["SQL_USER"],
+            "PASSWORD": os.environ["SQL_PASSWORD"],
+            "HOST": os.environ["SQL_HOST"],
+            "PORT": os.environ["SQL_PORT"],
+            'TEST': {
+                'NAME': 'test_database',  # Явное указание имени тестовой БД
+            }
+        },
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+
+            #"SQL_DATABASE", BASE_DIR / "db.sqlite3"
+            "NAME": BASE_DIR / "db.sqlite3",
+            'TEST': {
+                'NAME': 'test_database.sqlite3',  # Тестовая БД тоже SQLite
+            }
+        },
+    }
+    
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -184,72 +205,73 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'file': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+if False:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'file': {
+                'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+            },
         },
-    },
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'app.logging_handlers.TelegramFileHandler',
-            'formatter': 'file',
-            'filename': 'logs/errors.log',
+        'handlers': {
+            'file': {
+                'level': 'ERROR',
+                'class': 'app.logging_handlers.TelegramFileHandler',
+                'formatter': 'file',
+                'filename': 'logs/errors.log',
+            },
+            'file_payment': {
+                'level': 'ERROR',
+                'class': 'app.logging_handlers.TelegramFileHandler',
+                'formatter': 'file',
+                'filename': 'logs/payment-errors.log',
+            },
+            'file_webhook_logs': {
+                'level': 'ERROR',
+                'class': 'app.logging_handlers.TelegramFileHandler',
+                'formatter': 'file',
+                'filename': 'logs/webhooks.log',
+            },
+            'file_celery_logs': {
+                'level': 'ERROR',
+                'class': 'app.logging_handlers.TelegramFileHandler',
+                'formatter': 'file',
+                'filename': 'logs/celery.log',
+            },
+            'requests': {
+                'level': 'INFO',
+                'class': 'logging.FileHandler',
+                'formatter': 'file',
+                'filename': 'logs/requests.log',
+            },
         },
-        'file_payment': {
-            'level': 'ERROR',
-            'class': 'app.logging_handlers.TelegramFileHandler',
-            'formatter': 'file',
-            'filename': 'logs/payment-errors.log',
+        'loggers': {
+            '': {
+                'level': 'ERROR',
+                'handlers': ['file']
+            },
+            'celery': {
+                'level': 'ERROR',
+                'handlers': ['file_celery_logs'],
+                'propagate': False,
+            },
+            'payment': {
+                'level': 'ERROR',
+                'handlers': ['file_payment'],
+                'propagate': False,
+            },
+            'webhook': {
+                'level': 'ERROR',
+                'handlers': ['file_webhook_logs'],
+                'propagate': False,
+            },
+            'requests': {
+                'level': 'INFO',
+                'handlers': ['requests'],
+            }
         },
-        'file_webhook_logs': {
-            'level': 'ERROR',
-            'class': 'app.logging_handlers.TelegramFileHandler',
-            'formatter': 'file',
-            'filename': 'logs/webhooks.log',
-        },
-        'file_celery_logs': {
-            'level': 'ERROR',
-            'class': 'app.logging_handlers.TelegramFileHandler',
-            'formatter': 'file',
-            'filename': 'logs/celery.log',
-        },
-        'requests': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': 'logs/requests.log',
-        },
-    },
-    'loggers': {
-        '': {
-            'level': 'ERROR',
-            'handlers': ['file']
-        },
-        'celery': {
-            'level': 'ERROR',
-            'handlers': ['file_celery_logs'],
-            'propagate': False,
-        },
-        'payment': {
-            'level': 'ERROR',
-            'handlers': ['file_payment'],
-            'propagate': False,
-        },
-        'webhook': {
-            'level': 'ERROR',
-            'handlers': ['file_webhook_logs'],
-            'propagate': False,
-        },
-        'requests': {
-            'level': 'INFO',
-            'handlers': ['requests'],
-        }
-    },
-}
+    }
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

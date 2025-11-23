@@ -191,6 +191,8 @@ copy_debug_files_to_git.sh
 app/portfolio_generator/.vscode
 app/outputs
 
+app/db.sqlite3
+
 *.ipynb
 .ipynb_checkpoints/
 
