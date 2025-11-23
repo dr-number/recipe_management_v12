@@ -1,3 +1,4 @@
+{% load functions_html %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +15,8 @@
                         <h4 class="mb-0">Добавление рецепта</h4>
                     </div>
                     <div class="card-body">
+                        <a href="{{'HOST'|get_const}}/main/front/loginin/">Домой</a>
+                        <a href="{{'HOST'|get_const}}/main/front/support/">Техподдержка</a>
                         {% if api_errors %}
                             <div class="alert alert-danger">
                                 {% for field, errors in api_errors.items %}
