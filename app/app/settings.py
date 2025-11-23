@@ -321,46 +321,46 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = int(os.environ['EMAIL_USE_TLS'])
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+if not IS_WNDOWS:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': 'redis://redis:6379/1',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            }
         }
     }
-}
-USER_AGENTS_CACHE = 'default'
+    USER_AGENTS_CACHE = 'default'
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
 
-CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
-REDIS_URL = os.environ['REDIS_HOST']
-REDIS_PORT = os.environ['REDIS_PORT']
+    CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
+    REDIS_URL = os.environ['REDIS_HOST']
+    REDIS_PORT = os.environ['REDIS_PORT']
 
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_BROKER_URL = os.environ['REDIS_HOST']
-CELERY_BACKEND_URL = os.environ['REDIS_HOST']
-CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_TIMEZONE = os.getenv('TIMEZONE')
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = os.environ['REDIS_HOST'] + '/0'
-CELERY_RESULT_EXPIRES = 60
+    CELERY_ACCEPT_CONTENT = ['application/json']
+    CELERY_BROKER_URL = os.environ['REDIS_HOST']
+    CELERY_BACKEND_URL = os.environ['REDIS_HOST']
+    CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_TIMEZONE = os.getenv('TIMEZONE')
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_RESULT_BACKEND = os.environ['REDIS_HOST'] + '/0'
+    CELERY_RESULT_EXPIRES = 60
 
-BROKER_URL = os.environ['REDIS_HOST']
-BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+    BROKER_URL = os.environ['REDIS_HOST']
+    BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("redis", 6379)],
+            },
         },
-    },
-}
+    }
 
 
 
