@@ -21,7 +21,7 @@ Create .env.local, .env.local.db files with correct permissions in the root of t
     cd /d D:\...\dir_project
     python -m venv venv
     venv\Scripts\activate
-    pip install -r requirements.txt
+    pip install -r .\app\requirements.txt
     python .\app\manage.py migrate --settings=app.settings
     python .\app\manage.py runserver 0.0.0.0:8700
 
